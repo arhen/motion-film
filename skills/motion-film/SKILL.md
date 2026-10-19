@@ -75,6 +75,7 @@ All optional. Each makes a phase better; none is required. Check which ones are 
 | Building one animation right; naming an effect | `animate`, `animation-vocabulary` | same repo | `motion-film-build/PATTERNS.md` and the motion tokens |
 | Polish and invisible details | `emil-design-eng` | same repo | The bar above and the lessons below |
 | Capturing live product screens and states; checking the video in its page | `browser-use` (browser-harness) | https://github.com/browser-use/browser-harness | Any headless browser that can take screenshots (Playwright, Puppeteer); check the embed by hand |
+| A technical idea drawn as an isometric machine (mechanism explainers) | `anatomy` | https://github.com/wheresryan22/anatomy (`npx skills add https://github.com/wheresryan22/anatomy --skill anatomy`) | A kinetic explainer with diagrams; animate any figure from the clock (`motion-film-build` §7a) |
 
 ## Lessons that cost a re-render
 

@@ -1,6 +1,6 @@
 # Motion languages
 
-A motion language is the physics of one video: how things enter, move, collide and leave, and how that sounds. Pick one per video from the subject's world, then keep every scene inside it. The first five have been built and shipped; the last three serve the content and footage kinds. Add your own in the same shape.
+A motion language is the physics of one video: how things enter, move, collide and leave, and how that sounds. Pick one per video from the subject's world, then keep every scene inside it. The first five have been built and shipped; the last four serve the content and footage kinds. Add your own in the same shape.
 
 Spring notation: `f` is natural frequency (Hz), `z` is damping ratio (`z < 1` overshoots, `z ≥ 1` does not).
 
@@ -75,6 +75,16 @@ Spring notation: `f` is natural frequency (Hz), `z` is damping ratio (`z < 1` ov
 - **Camera:** the framing follows the face (the `x`, `y` of each shot); the eyes stay in the upper third; never crop the chin and forehead at once.
 - **Sound:** the speaker's voice cleaned and up front; a light bed ducked well under it; a subtle whoosh on layout changes only.
 - **Avoid:** covering the face or the mouth with captions or overlays, more than one overlay at once, captions in the platform's safe zones, cuts that change what the speaker meant.
+
+## Mechanism explainer
+
+- **Fits:** a technical idea that is really a system with parts: a queue, a cache, a pipeline, an index, an engine, how a product works inside. Developer tools and infrastructure.
+- **Signature moves:** the idea drawn as a machine of solid isometric parts; parts assemble along the axis they mount on, base first; the machine runs (inputs enter, travel along pipes or belts, get changed, leave as the result); an exploded view pulls the assemblies apart so each can be named; one part at a time lights up in the accent while the voice names it; a gauge or counter shows the outcome.
+- **Timing:** solid things do not wobble: assembly springs at `z 0.8-1.0`, staggered 60-120 ms in mounting order. Flows run at a constant, readable pace (linear), with eased starts and stops. One named part per spoken sentence, lit 0.1 s before its word. Hold the exploded view long enough to read every label (`holdFor()` on the label count).
+- **Camera:** a fixed isometric angle (orbiting breaks the projection); push in 1.5-3× onto the part being named; pan only along the isometric axes.
+- **Sound:** soft and mechanical: a seat "thock" as each assembly lands, a low hum while the machine runs, a tick per readout step, all on contact frames.
+- **Avoid:** parts floating with nothing under them, lines that end in mid-air, more than one lit part at a time, spinning the whole machine, glows and particles standing in for "energy".
+- **Built with:** the optional `anatomy` skill for the parts and geometry, animated from the clock (`motion-film-build` §7a).
 
 ## Writing a new one
 

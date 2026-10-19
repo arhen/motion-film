@@ -112,7 +112,18 @@ Use [templates/MotionBlur.tsx](templates/MotionBlur.tsx) for accumulation blur: 
 - **Rebuilt components** take a size multiplier and content props, and pull colours from the theme. A raw hex value in a scene is a missing token.
 - **Third-party marks** come from the vendored set, preloaded.
 
-## 7a. Footage
+## 7a. Interactive figures in a video
+
+Figures made for web pages (for example isometric machines from the `anatomy` skill) are built to animate themselves: a timer loop, springs that follow the pointer, an idle tour, CSS animations. A render draws frames out of order and in parallel, so anything the browser times on its own comes out wrong or different on every render. Keep the drawing, replace the motion:
+
+- **Use the static art and the geometry,** not the live loop. Render the parts as JSX in painter's order, wrap the moving assemblies in `<g>`, and set each one's `transform` from `t`: the kit's pure helpers (such as `translateAlong(P, [x(t), 0, 0])`) with our springs and cues. Recompute a changing shape's path from `t` too.
+- **Turn off the figure's CSS motion** (flowing dashes, pulsing dots, hover transitions). Drive dash offsets and opacities from `t` instead. `brand-audit.sh` flags leftovers.
+- **Depth order.** If parts move toward or away from the viewer, re-sort them every frame from `t`, using the figure's own depth keys.
+- **One accent.** The figure's single lit tone is the video's accent; map its tones (low, mid, high, lit) to theme colours for each ground.
+- **WebGL layers** only with their time uniform taken from the frame; render twice and diff to prove they are deterministic. Prefer SVG-only figures. Skip experimental 3D modes in video.
+- **Audit the figure first** with its own checks (clearances, depth order, loose line ends), then animate and run our motion checks.
+
+## 7b. Footage
 
 Real footage (a talking head, a screen recording) goes through `motion-film-footage`: the cut list, retiming and `Footage.tsx` (reframing, punch-ins, zooms and the full, split, bubble and cutaway layouts). Explanations draw in `explainRegion()`.
 

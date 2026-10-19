@@ -35,7 +35,7 @@ Example:
 | Kind | What it is | Length | Formats | Voice | Music | You need |
 |---|---|---|---|---|---|---|
 | **Tutorial or how-to** | Steps on a screen recording or rebuilt UI, with zooms and step chips | 30 s-3 min | 16:9; 9:16 tips | own recording or AI | soft bed | the recording, or the steps |
-| **Concept or term explainer** | One idea built on screen from words and diagrams | 30-90 s | 9:16 and 16:9 | AI or own | soft bed | the definition and its source |
+| **Concept or term explainer** | One idea built on screen from words and diagrams, or as a machine when the idea is a system with parts | 30-90 s | 9:16 and 16:9 | AI or own | soft bed | the definition and its source |
 | **Article or post explainer** | An article's argument in three points, with the source on screen | 45-120 s | 9:16 and 16:9 | AI or own | soft bed | the article (URL or text) |
 | **Talking-head clip** | Your own footage cut tight, with captions, punch-ins and visual explanations beside or over you | 15-60 s | 9:16 | the footage's own voice | light bed, ducked | the footage, rights to it |
 | **Series kit** | The fixed pieces of a recurring show: intro, lower thirds, caption style, end card | 3-8 s each | as the series | none | sonic logo | channel brand |
@@ -51,7 +51,7 @@ Each kind has a shape. The beats are a starting point; the subject decides the d
 - **Launch or marketing film:** situation → the product or idea meets it → one clear insight or turn → the person acts → a visible result → sign-off.
 - **Showreel:** an opening hit, rising density of real screens, a short lull, the biggest moment in the last quarter, a clean sign-off.
 - **Tutorial:** show the finished result first → the steps, one idea each (numbered chips are honest here, because the steps are real) → a recap → what to try next. Zoom to where the action is; return to the full screen between steps.
-- **Concept or term explainer:** a hook (a question or a surprising case) → the definition in one plain sentence → a visual model or analogy that builds piece by piece → one concrete example → the takeaway line.
+- **Concept or term explainer:** a hook (a question or a surprising case) → the definition in one plain sentence → a visual model or analogy that builds piece by piece (for a system, the machine assembles and runs; see "Mechanism explainer") → one concrete example → the takeaway line.
 - **Article explainer:** the claim in one line → at most three key points, one visual each → so what → a source card (title, author or outlet, date, URL) held long enough to read.
 - **Talking-head clip:** the strongest line first (the hook, within the first two seconds) → the point → visual support beside or over the speaker → the payoff or the call to action. One idea per clip.
 - **Series kit:** the same intro, lower thirds, caption style and end card every episode, so recognition does the work.

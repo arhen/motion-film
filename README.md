@@ -221,10 +221,12 @@ The suite leans on frontend skills instead of repeating them. Each phase says wh
 | `impeccable` | [pbakaus/impeccable](https://github.com/pbakaus/impeccable) | Project context, design critique, typography, extracting tokens and components |
 | `review-animations`, `animate`, `animation-vocabulary`, `emil-design-eng` | [emilkowalski/skills](https://github.com/emilkowalski/skills) | Motion critique, building one animation right, naming effects, polish |
 | `browser-use` | [browser-use/browser-harness](https://github.com/browser-use/browser-harness) | Capturing live product screens, checking the video in its page |
+| `anatomy` | [wheresryan22/anatomy](https://github.com/wheresryan22/anatomy) | Technical ideas drawn as isometric machines, for mechanism explainers; animated from the clock in video |
 
 ```sh
 npx impeccable install
 npx skills@latest add emilkowalski/skills
+npx skills@latest add https://github.com/wheresryan22/anatomy --skill anatomy
 ```
 
 For browser-harness, follow its [install guide](https://github.com/browser-use/browser-harness/blob/main/install.md).
