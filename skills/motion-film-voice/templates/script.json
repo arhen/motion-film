@@ -1,0 +1,11 @@
+{
+	"voiceId": "<voice id from your registry>",
+	"modelId": "eleven_v3",
+	"settings": {"stability": 0.55, "similarity_boost": 0.8},
+	"lines": [
+		{"id": "V1", "text": "First line, six to twelve words.", "direction": "[calm, warm, conversational] "},
+		{"id": "V2", "text": "Second line of the script.", "direction": "[calm, warm, conversational] "},
+		{"id": "V3", "text": "A line that must move a little faster.", "direction": "[upbeat, brisk pace] ", "seed": 11},
+		{"id": "V4", "text": "A line shipped five percent faster.", "direction": "[calm, warm, conversational] ", "tempo": 1.05}
+	]
+}

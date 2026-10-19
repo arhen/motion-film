@@ -1,0 +1,23 @@
+{
+	"fps": 30,
+	"seconds": 20.0,
+	"bpm": 96,
+	"width": 1920,
+	"height": 1080,
+	"vo": [
+		{"id": "V1", "at": 0.6},
+		{"id": "V2", "at": 4.0},
+		{"id": "V3", "alignWord": 2, "at": 9.5},
+		{"id": "V4", "alignWord": 0, "beat": 24}
+	],
+	"cues": {
+		"opening": [0.0, 0.6],
+		"elementsIn": [1.2, 1.6, 2.0, 2.4],
+		"turn": 6.2,
+		"insight": 9.5,
+		"action": 12.8,
+		"result": [13.2, 15.4],
+		"signoff": 17.6,
+		"loop": [19.5, 20.0]
+	}
+}

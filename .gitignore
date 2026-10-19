@@ -1,0 +1,12 @@
+node_modules/
+__pycache__/
+.cache/
+out/
+.env
+*.key
+.DS_Store
+*.mp3
+*.wav
+*.mp4
+*.webm
+*.m4a
