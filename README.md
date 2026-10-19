@@ -9,7 +9,7 @@
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-3355FF?style=flat-square"></a>
   <img alt="9 agent skills" src="https://img.shields.io/badge/agent%20skills-9-16130F?style=flat-square">
   <a href="https://www.remotion.dev"><img alt="Built for Remotion" src="https://img.shields.io/badge/built%20for-Remotion-0B84F3?style=flat-square"></a>
-  <img alt="Works with Claude Code, Codex, Cursor, OpenCode and more" src="https://img.shields.io/badge/works%20with-Claude%20Code%20%C2%B7%20Codex%20%C2%B7%20Cursor%20%C2%B7%20OpenCode-0E9F8A?style=flat-square">
+  <img alt="Works with Claude Code, Codex, Pi, Cursor, OpenCode and more" src="https://img.shields.io/badge/works%20with-Claude%20Code%20%C2%B7%20Codex%20%C2%B7%20Pi%20%C2%B7%20Cursor%20%C2%B7%20OpenCode-0E9F8A?style=flat-square">
 </p>
 
 **motion-film** is a set of agent skills that teach your coding agent to make **consistent, high-craft motion videos in code**, for a product or for content: landing-page loops, feature showcases, launch films, showreels, tutorials, explainers of a term or an article, and clips cut from your own talking-head footage for Reels, TikTok and Shorts.
@@ -81,7 +81,7 @@ No Node? Copy the folders by hand: see [Manual install](#manual-install). Alread
    npx skills@latest add arhen/motion-film --skill '*' -y
    ```
    - Add `-g` to install for the user (all projects) instead of the current project. If the user did not say, ask which they want.
-   - Add `-a <agent>` to target one agent, for example `-a claude-code`, `-a codex`, `-a cursor`, `-a opencode`.
+   - Add `-a <agent>` to target one agent, for example `-a claude-code`, `-a codex`, `-a pi`, `-a cursor`, `-a opencode`.
 2. **If `npx` is unavailable or the command fails**, install by hand (see [Manual install](#manual-install)): clone the repository, copy every `skills/motion-film*` folder into the agent's skills folder, and do not overwrite an existing folder of the same name without asking.
 3. **Verify.** There must be nine folders (`motion-film`, `motion-film-brief`, `motion-film-system`, `motion-film-voice`, `motion-film-footage`, `motion-film-score`, `motion-film-build`, `motion-film-qa`, `motion-film-deliver`), each with a `SKILL.md` whose `name` matches the folder.
    ```sh
