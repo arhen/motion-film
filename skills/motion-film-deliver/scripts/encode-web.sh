@@ -10,8 +10,10 @@ dst=$3
 name=$4
 w=${5:-1600}
 pw=${6:-1280}
+COLOR="-colorspace bt709 -color_primaries bt709 -color_trc bt709 -color_range tv"
+TAG="setparams=colorspace=bt709:color_primaries=bt709:color_trc=bt709:range=tv"
 mkdir -p "$dst"
-ffmpeg -v error -y -i "$src" -vf "scale=$w:-2:flags=lanczos" -c:v libx264 -preset slow -crf 26 -profile:v high -pix_fmt yuv420p -movflags +faststart -c:a aac -b:a 96k "$dst/$name.mp4"
-ffmpeg -v error -y -i "$src" -vf "scale=$w:-2:flags=lanczos" -c:v libvpx-vp9 -b:v 0 -crf 36 -row-mt 1 -deadline good -cpu-used 2 -pix_fmt yuv420p -c:a libopus -b:a 96k "$dst/$name.webm"
+ffmpeg -v error -y -i "$src" -vf "scale=$w:-2:flags=lanczos,$TAG" -c:v libx264 -preset slow -crf 26 -profile:v high -pix_fmt yuv420p $COLOR -movflags +faststart -c:a aac -b:a 96k "$dst/$name.mp4"
+ffmpeg -v error -y -i "$src" -vf "scale=$w:-2:flags=lanczos,$TAG" -c:v libvpx-vp9 -b:v 0 -crf 36 -row-mt 1 -deadline good -cpu-used 2 -pix_fmt yuv420p $COLOR -c:a libopus -b:a 96k "$dst/$name.webm"
 ffmpeg -v error -y -i "$poster" -vf "scale=$pw:-2:flags=lanczos" -q:v 3 "$dst/$name-poster.jpg"
 ls -la "$dst/$name.mp4" "$dst/$name.webm" "$dst/$name-poster.jpg"

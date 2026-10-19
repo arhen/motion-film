@@ -8,6 +8,7 @@ type Word = {w: string; start: number; end: number};
  * Captions = the voice-over, revealed word by word. Lines are split into chunks of at most `max`
  * characters, at punctuation where possible; short chunks merge back; chunks play strictly in sequence.
  * `lines` holds absolute word times in seconds (see clock.ts VO).
+ * highlight: a colour for the word being spoken (short-video caption style); omit it for calm captions.
  * Size, position and chunk length follow the format: landscape sits low in the frame; vertical sits
  * above the band that short-video apps cover with their own interface (see motion-film-system §6).
  */
@@ -39,12 +40,12 @@ export const chunk = (lines: Word[][], max = 44) => {
 	return out;
 };
 
-const Word: React.FC<{at: number; t: number; children: string}> = ({at, t, children}) => {
+const Word: React.FC<{at: number; t: number; color?: string; children: string}> = ({at, t, color, children}) => {
 	const s = spS(t, at, 2.8, 0.75);
 	const lin = clamp((t - at) / 0.16);
 	return (
 		<span style={{display: 'inline-block', overflow: 'hidden', padding: '0.08em 0.04em 0.16em', margin: '-0.08em -0.04em -0.16em', verticalAlign: 'top'}}>
-			<span style={{display: 'inline-block', transform: `translateY(${(1 - s) * 105}%)`, filter: lin < 1 ? `blur(${(1 - lin) * 5}px)` : undefined, opacity: t < at ? 0 : clamp(lin * 2)}}>{children}</span>
+			<span style={{display: 'inline-block', transform: `translateY(${(1 - s) * 105}%)`, filter: lin < 1 ? `blur(${(1 - lin) * 5}px)` : undefined, opacity: t < at ? 0 : clamp(lin * 2), color}}>{children}</span>
 		</span>
 	);
 };
@@ -58,7 +59,8 @@ export const Subtitles: React.FC<{
 	size?: number;
 	y?: number;
 	until?: number;
-}> = ({lines, font, ink, pill, border = 'transparent', size, y, until = Infinity}) => {
+	highlight?: string;
+}> = ({lines, font, ink, pill, border = 'transparent', size, y, until = Infinity, highlight}) => {
 	const {t} = useSec();
 	const {width, height} = useVideoConfig();
 	const tall = height > width * 1.2;
@@ -81,7 +83,7 @@ export const Subtitles: React.FC<{
 						<div style={{fontFamily: font, fontWeight: 500, fontSize: px, letterSpacing: '-0.01em', lineHeight: 1.15, color: ink, background: pill, border: `1px solid ${border}`, borderRadius: 22, padding: '12px 30px 16px', whiteSpace: 'nowrap'}}>
 							{c.map((w, k) => (
 								<React.Fragment key={k}>
-									<Word at={w.start - 0.08} t={t}>
+									<Word at={w.start - 0.08} t={t} color={highlight && t >= w.start - 0.04 && t < w.end + 0.06 ? highlight : undefined}>
 										{w.w}
 									</Word>
 									{k < c.length - 1 ? ' ' : ''}

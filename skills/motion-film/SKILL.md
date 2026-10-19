@@ -1,6 +1,6 @@
 ---
 name: motion-film
-description: Plan, build and ship consistent, high-craft motion videos in code for a product or a body of content (launch films, showreels, landing-page explainer loops, story films per audience, animated product demos, vertical cuts, recurring content series), with picture, voice-over, music and sound effects locked to one clock, built from a video design system derived from the product's or channel's own, critiqued in bounded rounds and verified with evidence. Use when asked for a promo, explainer, showreel, product video, motion graphics, landing or hero video, or a series of videos that should look and sound like one family. Entry point that routes to motion-film-brief, motion-film-system, motion-film-voice, motion-film-score, motion-film-build, motion-film-qa and motion-film-deliver.
+description: Plan, build and ship consistent, high-craft motion videos in code for a product or a body of content (landing-page loops, feature showcases, launch films, showreels, tutorials, term and article explainers, talking-head clips from the owner's own footage, vertical cuts for Reels and TikTok, recurring content series), with picture, voice-over, music and sound effects locked to one clock, built from a video design system derived from the product's or channel's own, directed with numbers instead of adjectives, critiqued in bounded rounds and verified with evidence. Use when asked for a promo, explainer, showreel, product or feature video, tutorial, motion graphics, landing or hero video, social clip, or a series of videos that should look and sound like one family. Entry point that routes to motion-film-brief, motion-film-system, motion-film-voice, motion-film-footage, motion-film-score, motion-film-build, motion-film-qa and motion-film-deliver.
 ---
 
 # Motion films
@@ -16,7 +16,8 @@ A video passes when all of these hold:
 3. **One design system.** Type, colour, logo, icons, third-party marks, layout, motion and sound come from the video design system (`motion-film-system`), which imports the source tokens instead of copying them.
 4. **A story, not a template.** Each video has its own subject, setting, arc and motion language. A set of videos must not share one pattern with the names swapped.
 5. **Honest.** People, businesses and numbers on screen are real and approved, or fictional and labelled as sample data. No invented customers, metrics, testimonials, prices or dates.
-6. **Verified by evidence.** Frames pulled from the real output file, speech-to-text of the final mix, a word-sync table, loudness and true peak, the loop seam, a brand audit. Whatever could not be verified (for example how the music feels) is said plainly.
+6. **Verified by evidence.** Frames pulled from the real output file, speech-to-text of the final mix, a word-sync table, motion over time, loudness and true peak, the loop seam, a brand audit. Whatever could not be verified (for example how the music feels) is said plainly.
+7. **Directed, not defaulted.** Every adjective in the request becomes a value (a curve, a spring, a duration, a colour role), and the brief names the generic looks the model would reach for and bans them.
 
 ## Phases and gates
 
@@ -25,15 +26,15 @@ Run them in order. Load each phase skill when you reach it.
 | # | Phase | Skill | Output | Gate |
 |---|---|---|---|---|
 | 0 | Preflight | this file | tools, keys, voices, fonts present | every check passes |
-| 1 | Brief | `motion-film-brief` | `BRIEF.md`, clock skeleton | owner agrees on story, length, voices (taste calls only) |
+| 1 | Brief | `motion-film-brief` | the kind (menu when unclear), the voice source, `BRIEF.md` with a direction sheet, clock skeleton | owner agrees on kind, story, length, voice (taste calls only) |
 | 2 | Design system | `motion-film-system` | video theme, components, catalogue board, `VIDEO-SYSTEM.md` | catalogue board passes one critique round |
-| 3 | Voice | `motion-film-voice` | takes + word-timing JSON | each line's speech-to-text matches the script; lines fit their slots |
+| 3 | Voice or footage | `motion-film-voice` or `motion-film-footage` | AI takes, own recording or a footage edit, all as word-timing JSON | speech-to-text matches the script; lines fit their slots; no cut inside a word |
 | 4 | Score | `motion-film-score` | mixed WAV per video (synthesized score, or a licensed track with detected beats) | loudness target met; voice band well clear of the bed |
 | 5 | Build | `motion-film-build` | compositions | key-frame boards pass one critique round |
 | 6 | QA | `motion-film-qa` | evidence pack | all checks pass; findings fixed in one batch, confirmed once |
 | 7 | Deliver | `motion-film-deliver` | renders, web encodes, posters, README | files probe correctly; no generated media committed |
 
-Voice comes before the final clock: real line lengths set the slots. The build can start from the brief with placeholder slots and retime once takes exist. A silent or music-only video skips phase 3.
+Voice comes before the final clock: real line lengths set the slots. The build can start from the brief with placeholder slots and retime once takes exist. A silent or music-only video skips phase 3; a footage-based video takes its timing from the edit.
 
 ## 0. Preflight
 
@@ -56,7 +57,8 @@ npx remotion --version  # inside the video project
 ## Working rules
 
 - **Reversible work goes ahead.** Building, rendering, retiming and re-mixing can be undone: do them and show the result.
-- **Ask only the taste calls.** Story, voice choice, music character, and anything that spends money or overwrites shipped media. Offer options with a recommendation.
+- **Ask only the taste calls.** The kind of video when the request is unclear, the story, the voice source and voice, the music character, and anything that spends money or overwrites shipped media. Offer options with a recommendation, in one message.
+- **Translate feedback into numbers** before changing anything ("make it pop" becomes a 1.0 → 1.08 → 1.0 pulse over 0.2 s on the beat), and point at frames, not impressions (`motion-film-qa`).
 - **Re-read the brand rules at the start of every job.** They change between jobs, sometimes back and forth. Memory is not a source.
 - **Never regenerate shipped voice-over** unless the owner asks. A new take changes word timings and breaks the sync.
 - **Never commit generated media** (renders, mixes, audio takes, downloaded fonts). Commit sources, clocks, scripts and word-timing JSON.

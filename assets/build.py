@@ -139,12 +139,12 @@ def hero(P):
 
 def pipeline(P):
     H = 700
-    b = [card(H, P), heading(P, "Eight skills, eight gates", "Each phase has an output and a gate. Work moves on only when the gate passes.")]
+    b = [card(H, P), heading(P, "Nine skills, eight gates", "Each phase has an output and a gate. Work moves on only when the gate passes.")]
     phases = [
         ("0", "Preflight", "motion-film", ["tools, keys, fonts,", "voices present"], ["every check passes"], []),
-        ("1", "Brief", "motion-film-brief", ["story, script, formats,", "clock skeleton"], ["owner agrees on story,", "length and voices"], []),
+        ("1", "Brief", "motion-film-brief", ["kind, story, script,", "direction sheet, clock"], ["owner agrees on kind,", "story, length, voice"], []),
         ("2", "Design system", "motion-film-system", ["theme, components,", "catalogue board"], ["catalogue passes one", "critique round"], ["impeccable", "browser-use"]),
-        ("3", "Voice", "motion-film-voice", ["takes with", "word timings"], ["speech-to-text matches,", "lines fit their slots"], []),
+        ("3", "Voice or footage", "motion-film-voice | footage", ["AI or own voice, or a", "cut of your footage"], ["speech-to-text matches,", "no cut inside a word"], []),
         ("4", "Music", "motion-film-score", ["synthesized score or", "a supplied track"], ["loudness met, voice", "clear of the bed"], []),
         ("5", "Picture", "motion-film-build", ["Remotion compositions,", "one per format"], ["key frames pass one", "critique round"], ["animate"]),
         ("6", "Critique and QA", "motion-film-qa", ["evidence pack from", "the real file"], ["all checks pass,", "fixed in one batch"], ["impeccable", "review-animations"]),
@@ -159,7 +159,7 @@ def pipeline(P):
         b.append(f'<circle cx="{x + 34}" cy="{y + 34}" r="16" fill="{P["accent"]}"/>')
         b.append(text(x + 34, y + 40, num, 17, P["panel"], 700, mono=True, anchor="middle"))
         b.append(text(x + 60, y + 40, name, 21, P["ink"], 700, ls=-0.3))
-        b.append(text(x + 20, y + 74, skill, 14, P["faint"], 500, mono=True))
+        b.append(text(x + 20, y + 74, skill, 14 if len(skill) < 24 else 12.5, P["faint"], 500, mono=True))
         for k, line in enumerate(out):
             b.append(text(x + 20, y + 104 + k * 22, line, 17, P["muted"]))
         b.append(rect(x + 20, y + 144, 44, 20, P["tint"], rx=10))

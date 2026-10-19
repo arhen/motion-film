@@ -7,12 +7,12 @@
 
 <p align="center">
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-3355FF?style=flat-square"></a>
-  <img alt="8 agent skills" src="https://img.shields.io/badge/agent%20skills-8-16130F?style=flat-square">
+  <img alt="9 agent skills" src="https://img.shields.io/badge/agent%20skills-9-16130F?style=flat-square">
   <a href="https://www.remotion.dev"><img alt="Built for Remotion" src="https://img.shields.io/badge/built%20for-Remotion-0B84F3?style=flat-square"></a>
   <img alt="Works with Claude Code, Codex, Cursor, OpenCode and more" src="https://img.shields.io/badge/works%20with-Claude%20Code%20%C2%B7%20Codex%20%C2%B7%20Cursor%20%C2%B7%20OpenCode-0E9F8A?style=flat-square">
 </p>
 
-**motion-film** is a set of agent skills that teach your coding agent to make **consistent, high-craft motion videos in code** for a product or a body of content: landing-page loops, launch films, showreels, animated product demos, vertical cuts for Reels and TikTok, and recurring content series.
+**motion-film** is a set of agent skills that teach your coding agent to make **consistent, high-craft motion videos in code**, for a product or for content: landing-page loops, feature showcases, launch films, showreels, tutorials, explainers of a term or an article, and clips cut from your own talking-head footage for Reels, TikTok and Shorts.
 
 The idea is simple: a video is frontend work with a clock. Every frame is a designed screen, so it is built from your design system, critiqued like UI, and checked with evidence. Picture, voice-over, music and sound effects all read **one clock file**, so a spoken word, a sound hit and a motion land on the same frame.
 
@@ -31,9 +31,14 @@ npx skills@latest add arhen/motion-film --skill '*'
     <td width="33%" valign="top"><b>Your design system, for video</b><br>Tokens imported, not copied. Type minimums for the real playback size, logo rules, rebuilt components, safe zones per format.</td>
   </tr>
   <tr>
-    <td valign="top"><b>Voice-over that stays in sync</b><br>Takes with word timestamps, checked line by line with speech-to-text, placed on the clock.</td>
+    <td valign="top"><b>Voice three ways</b><br>An AI voice (ElevenLabs), your own recording, or the voice in your footage. All become word-timed lines on the clock.</td>
     <td valign="top"><b>Music two ways</b><br>A score synthesized in code that hits every cue, or your own licensed track with the cues snapped onto its beats.</td>
-    <td valign="top"><b>Evidence QA</b><br>Frames from the real file, loop seam, word sync, loudness, cue timing, brand and honesty audits, and an embed check.</td>
+    <td valign="top"><b>Evidence QA</b><br>Frames from the real file, motion over time, loop seam, word sync, A/V offset, loudness, brand and honesty audits.</td>
+  </tr>
+  <tr>
+    <td valign="top"><b>Any kind of video</b><br>Ten kinds from landing loops to article explainers, each with its length, format and story shape. Unclear request? You get a menu.</td>
+    <td valign="top"><b>From your own footage</b><br>Transcribe, cut the pauses (never inside a word), reframe to 9:16, punch in, and explain beside you with split and bubble layouts.</td>
+    <td valign="top"><b>Directed, not defaulted</b><br>Adjectives become numbers: curves, springs, durations, holds. The generic looks a model reaches for are named and banned.</td>
   </tr>
 </table>
 
@@ -41,7 +46,7 @@ npx skills@latest add arhen/motion-film --skill '*'
 
 **1. Have a Remotion project.** These skills do not create one. Follow Remotion's guide ([remotion.dev/docs](https://www.remotion.dev/docs)), usually `npx create-video@latest`.
 
-**2. Install the skills** (all eight; they work as a suite):
+**2. Install the skills** (all nine; they work as a suite):
 
 ```sh
 npx skills@latest add arhen/motion-film --skill '*'          # into this project
@@ -51,15 +56,19 @@ npx skills@latest add arhen/motion-film --skill '*' -a claude-code   # one agent
 
 No Node? Copy the folders by hand: see [Manual install](#manual-install).
 
-**3. Ask your agent for a video.** The entry skill is `motion-film`; it runs the phases in order and asks you only the taste calls.
+**3. Ask your agent for a video.** The entry skill is `motion-film`; it runs the phases in order and asks you only the taste calls. If your request does not say what kind of video, it offers a short menu first, and it asks where the voice comes from before spending anything.
 
 > Use motion-film to make a 20-second looping explainer for our landing page. Our tokens are in `src/styles/tokens.css` and the brand rules are in `brand/`.
 
-> Make 15-second vertical cuts of the launch film for Reels, one per audience, with captions.
+> Cut three 30-second Reels from `footage/webinar.mp4`, one idea each, with captions and a diagram beside me when I explain the pricing.
+
+> Make a 60-second explainer of the term "vector database" for TikTok, from this article: <url>.
+
+> Turn my screen recording `footage/setup.mov` into a 90-second tutorial with zooms on each step. I'll narrate it myself.
 
 > Lay our licensed track `music/launch.mp3` under the launch film and lock the scene changes to its beats.
 
-> Run a QA pass on `out/launch.mp4`: frames, loop seam, word sync and loudness.
+> Run a QA pass on `out/launch.mp4`: frames, motion, loop seam, word sync and loudness.
 
 <br>
 
@@ -67,14 +76,14 @@ No Node? Copy the folders by hand: see [Manual install](#manual-install).
 
 > **If you are an AI agent** and a user asked you to install or use this repository, follow these steps exactly. Ask the user before anything that overwrites files, costs money, or is not listed here.
 
-1. **Install all eight skills together.** They reference each other's scripts by relative path, so a single skill on its own is incomplete.
+1. **Install all nine skills together.** They reference each other's scripts by relative path, so a single skill on its own is incomplete.
    ```sh
    npx skills@latest add arhen/motion-film --skill '*' -y
    ```
    - Add `-g` to install for the user (all projects) instead of the current project. If the user did not say, ask which they want.
    - Add `-a <agent>` to target one agent, for example `-a claude-code`, `-a codex`, `-a cursor`, `-a opencode`.
 2. **If `npx` is unavailable or the command fails**, install by hand (see [Manual install](#manual-install)): clone the repository, copy every `skills/motion-film*` folder into the agent's skills folder, and do not overwrite an existing folder of the same name without asking.
-3. **Verify.** There must be eight folders (`motion-film`, `motion-film-brief`, `motion-film-system`, `motion-film-voice`, `motion-film-score`, `motion-film-build`, `motion-film-qa`, `motion-film-deliver`), each with a `SKILL.md` whose `name` matches the folder.
+3. **Verify.** There must be nine folders (`motion-film`, `motion-film-brief`, `motion-film-system`, `motion-film-voice`, `motion-film-footage`, `motion-film-score`, `motion-film-build`, `motion-film-qa`, `motion-film-deliver`), each with a `SKILL.md` whose `name` matches the folder.
    ```sh
    ls <skills dir> | grep motion-film
    head -3 <skills dir>/motion-film/SKILL.md
@@ -102,19 +111,32 @@ No Node? Copy the folders by hand: see [Manual install](#manual-install).
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/pipeline-dark.svg">
-  <img alt="Eight phases, each with an output and a gate: preflight, brief, design system, voice, music, picture, critique and QA, deliver" src="assets/pipeline-light.svg" width="100%">
+  <img alt="Eight phases, each with an output and a gate: preflight, brief, design system, voice or footage, music, picture, critique and QA, deliver" src="assets/pipeline-light.svg" width="100%">
 </picture>
 
 | Skill | What it does |
 |---|---|
 | [`motion-film`](skills/motion-film/SKILL.md) | **Entry point.** The whole process, the quality bar, preflight checks, lessons that cost a re-render. |
-| [`motion-film-brief`](skills/motion-film-brief/SKILL.md) | **1. Brief.** One story and one motion language per video, the script, formats, the clock skeleton. |
+| [`motion-film-brief`](skills/motion-film-brief/SKILL.md) | **1. Brief.** The kind of video, the voice source, one story and one motion language per video, generic-story checks, the script, a numeric direction sheet, the clock skeleton. |
 | [`motion-film-system`](skills/motion-film-system/SKILL.md) | **2. Design system.** Video theme from your tokens, type minimums per format, logo and asset rules, components, a catalogue board. |
-| [`motion-film-voice`](skills/motion-film-voice/SKILL.md) | **3. Voice-over.** Audition, takes with word timings, speech-to-text checks, slot fitting. |
+| [`motion-film-voice`](skills/motion-film-voice/SKILL.md) | **3. Voice-over.** AI voice or your own recording: audition, takes with word timings, local or API transcription, speech-to-text checks, slot fitting. |
+| [`motion-film-footage`](skills/motion-film-footage/SKILL.md) | **3. Footage.** Clips from your own recordings: transcript, pauses, a cut list that never splits a word, reframing, punch-ins, zooms, split, bubble and cutaway layouts. |
 | [`motion-film-score`](skills/motion-film-score/SKILL.md) | **4. Music and SFX.** Synthesized score or a supplied track, SFX on cues, ducking, loops, loudness. |
 | [`motion-film-build`](skills/motion-film-build/SKILL.md) | **5. Picture.** Remotion patterns, one layout per format, captions, loop seams, motion blur, pitfalls. |
-| [`motion-film-qa`](skills/motion-film-qa/SKILL.md) | **6. Critique and QA.** One bounded critique round, then evidence from the real file. |
+| [`motion-film-qa`](skills/motion-film-qa/SKILL.md) | **6. Critique and QA.** One bounded critique round with a refute pass and feedback translated into numbers, then evidence from the real file. |
 | [`motion-film-deliver`](skills/motion-film-deliver/SKILL.md) | **7. Deliver.** Masters, web encodes, posters, embed snippet, a README with a summary per video. |
+
+### Kinds of video
+
+| Product | Content |
+|---|---|
+| Landing-page loop, 15-22 s | Tutorial or how-to, 30 s-3 min |
+| Feature showcase, 20-45 s | Term or concept explainer, 30-90 s |
+| Launch or marketing film, 30-60 s | Article explainer, 45-120 s |
+| Showreel, 20-40 s | Talking-head clip from your footage, 15-60 s |
+| App store or onboarding preview, 15-30 s | Series kit: intro, lower thirds, end card |
+
+Each kind comes with its formats, voice and music defaults, a story shape and its honesty rules ([KINDS.md](skills/motion-film-brief/KINDS.md)).
 
 ### One clock
 
@@ -175,7 +197,8 @@ Critique is bounded: render the boards, critique once, fix everything in one bat
 
 - A **Remotion** project ([setup guide](https://www.remotion.dev/docs)).
 - **Node 20+**, **Python 3** with numpy, scipy and Pillow, and **ffmpeg** with libx264, libvpx-vp9, libopus and aac.
-- For voice-over: an **ElevenLabs** account (text to speech with timestamps, speech to text). Optional; videos can be music-only.
+- For an AI voice: an **ElevenLabs** account (text to speech with timestamps, speech to text). Optional; your own recording or no voice works too.
+- For free local transcription (your own recording, footage): `npx remotion add @remotion/install-whisper-cpp` in the video project. The first run builds whisper.cpp (needs git, make and a C compiler) and downloads a model.
 - For capturing your product and checking embeds: **Chrome** and a browser automation tool.
 
 Tested on macOS. Linux should work; on Windows, use WSL.
@@ -186,6 +209,7 @@ Tested on macOS. Linux should work; on Windows, use WSL.
 - **ElevenLabs** (or any voice provider) charges per character. The voice skill asks before spending.
 - **Fonts** must be licensed for video. Brand fonts usually are; check before copying them into a project.
 - **Music:** a synthesized score needs no licence. A supplied track needs a written licence that covers the use (web, ads, social).
+- **Footage:** you need the rights to it and the consent of the people in it. Cuts never change what a speaker meant.
 - **Sample data:** people, businesses and numbers on screen are either real and approved, or fictional and labelled as sample data.
 
 ## Companion skills (optional)
@@ -228,12 +252,13 @@ To update, run the install again, or `npx skills update`.
 ```
 skills/
   motion-film/            entry point: phases, gates, preflight, lessons
-  motion-film-brief/      MOTION-LANGUAGES.md, templates/BRIEF.md, templates/clock.json
+  motion-film-brief/      KINDS.md, MOTION-LANGUAGES.md, templates/BRIEF.md, templates/clock.json
   motion-film-system/     templates/theme.ts, Catalog.tsx, VIDEO-SYSTEM.md
-  motion-film-voice/      scripts/vo.mjs, stt.mjs, slotfit.py, voice-stats.py
+  motion-film-voice/      scripts/vo.mjs, stt.mjs, transcribe.mjs, slotfit.py, voice-stats.py
+  motion-film-footage/    scripts/pauses.py, retime.py, quiet.py, templates/Footage.tsx
   motion-film-score/      scripts/synth.py, mix_template.py, beats.py, snap.py, onsets.py
   motion-film-build/      PATTERNS.md, templates/anim.ts, clock.ts, Subtitles.tsx, FilmShell.tsx …
-  motion-film-qa/         scripts/stills.mjs, frames.sh, grid.py, seam.sh, sync.py, probe.sh, brand-audit.sh
+  motion-film-qa/         scripts/stills.mjs, frames.sh, grid.py, onion.py, motion.py, seam.sh, sync.py, avlag.py, accent.py, probe.sh, brand-audit.sh
   motion-film-deliver/    scripts/encode-web.sh, templates/README-films.md
 assets/                   README diagrams (python3 assets/build.py rebuilds them)
 ```

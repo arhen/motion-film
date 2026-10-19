@@ -33,7 +33,8 @@ def norm(s):
     return re.sub(r"[^\w]", "", s.lower())
 
 
-stt = json.loads(Path(stt_path).read_text())[media]
+data = json.loads(Path(stt_path).read_text())
+stt = data if "words" in data else data[media]  # transcribe.mjs line format, or stt.mjs keyed by file
 heard = stt["words"]
 lines = [f"# Word sync: `{media}`", "", f"Transcript: {stt['text'].strip()}", "", "| Word | Expected (s) | Heard (s) | Δ (s) |", "| --- | --- | --- | --- |"]
 j, deltas = 0, []

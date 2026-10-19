@@ -26,7 +26,16 @@ Every SFX reads its time from the clock's `cues`, never from a number typed into
 - **Pitch to the key.** Pops, chimes and blips are notes, so an ascending set (for example a pentatonic run as items appear) sounds composed, not random.
 - **One palette per motion language:** drips and pour for liquid; swish, stamp and record beep for kinetic; twinkles and chimes for atmospheric; pin thocks, pencil scratch and hum for cartographic; impacts, risers, whooshes and clicks for showreels.
 - **Sonic logo.** The same two or three notes close every video (see the video design system).
-- **Restraint.** Keep a short gap of silence before a drop. One effect per visual event is enough.
+- **Times come from the motion.** Put a pop on a spring's settle, a whoosh peak on a move's peak speed, an impact on the contact frame (`springSettle()`, `springPeakSpeed()` in `anim.ts`), exported into the clock's cues. Picture leads: a hit lands on its visual frame or one frame after, never before.
+
+**Restraint.** Most of a video's cuts and moves get no sound.
+
+- About five designed effects per 10 s at most, placed where the music is sparse; about two whooshes per video.
+- Once a class of action has a sound (every card landing, every click), every instance gets it, at one level.
+- Keep a short gap of silence before a drop.
+- **The ending gets quieter, not louder.** The loudest moment is the hero moment (often 30-60 % in), not the logo. Before the lockup: 0.2-0.7 s of near-silence, then one clean sound (the sonic logo), then a tail to silence. Never stack two designed sounds within about 3 frames of each other there.
+- **Without voice-over:** one soft sound per on-screen phrase, on the frame it settles, with the held line in near-silence. Typing is silent, or thinned to about 12 key sounds per second, or one blip per word for fast typing.
+- **Levels:** an effect sits about 3-6 dB above the bed at its peak. Keep effects mostly below 8 kHz, so they do not hiss on phone speakers, and check that the mix still works in mono.
 
 ## 3. Voice-over in the mix
 
@@ -38,7 +47,7 @@ Every SFX reads its time from the clock's `cues`, never from a number typed into
 
 ## 4. Loop wrap and mastering
 
-- **Loops:** render the length plus a 3-4 s tail, then add the tail onto the start, so reverb and the bed continue across the seam.
+- **Loops:** render the length plus a 3-4 s tail, then add the tail onto the start, so reverb and the bed continue across the seam. The mixer also removes DC offset and puts a 2 ms raised-cosine fade at both ends, which hides the AAC encoder's padding at the seam.
 - **Soft-clip** gently, then **normalise in two passes, linear**, with `loudnorm` (the helper `loudnorm()` in `synth.py`):
 
 | Format | Integrated loudness | True peak |
@@ -46,6 +55,8 @@ Every SFX reads its time from the clock's `cues`, never from a number typed into
 | Showreels, launch films | -14 LUFS | ≤ -1.2 dBTP (master to -1.6, because the AAC encode adds peaks) |
 | Web loops, background video | -16 LUFS | ≤ -1.5 dBTP |
 | Social | -14 LUFS | ≤ -1.0 dBTP |
+
+The AAC encode raises true peak by up to about 1 dB: master the WAV a little under the ceiling (for example -2 dBTP for a -1 dBTP target), then measure the shipped MP4 or WebM, not the WAV.
 
 ## 5. A supplied track
 

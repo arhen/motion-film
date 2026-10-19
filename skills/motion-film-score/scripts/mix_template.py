@@ -157,7 +157,8 @@ def voice():
         if not timing.exists():
             continue
         words = json.loads(timing.read_text())["words"]
-        x = load_mp3(vo_dir / f"{entry['id']}.mp3")
+        take = next((p for p in (vo_dir / f"{entry['id']}.mp3", vo_dir / f"{entry['id']}.wav") if p.exists()), vo_dir / f"{entry['id']}.mp3")
+        x = load_mp3(take)
         s = max(0, int(vo_start(entry, words) * SR))
         v[s : s + len(x)] += x[: len(v) - s]
     if not np.any(v):
@@ -194,6 +195,11 @@ else:
     fade = int(0.4 * SR)
     master[-fade:] *= np.linspace(1, 0, fade)[:, None]
 master = np.tanh(master / (np.max(np.abs(master)) + 1e-9) * 1.2) / np.tanh(1.2)
+master -= master.mean(axis=0)
+edge = int(0.002 * SR)
+ramp = (0.5 - 0.5 * np.cos(np.linspace(0, np.pi, edge)))[:, None]
+master[:edge] *= ramp
+master[-edge:] *= ramp[::-1]
 pre = CACHE / f"{out.stem}-pre.wav"
 wavfile.write(pre, SR, (master * 0.95).astype(np.float32))
 out.parent.mkdir(parents=True, exist_ok=True)

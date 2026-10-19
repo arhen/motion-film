@@ -1,11 +1,24 @@
 ---
 name: motion-film-voice
-description: Voice-over for motion videos. Audition and choose voices with recorded evidence, generate takes with word-level timestamps (ElevenLabs by default), check every line with speech-to-text, fit lines to their slots on the clock, fix pace and pronunciation without breaking sync, and ship takes so picture, captions and music stay locked. Use when a video needs narration, captions synced to speech, a voice change, or a line regenerated. Part of the motion-film suite.
+description: Voice-over for motion videos. Choose the voice source (an AI voice, the owner's own recording, the voice in their footage, or none), audition and choose voices with recorded evidence, generate takes with word-level timestamps (ElevenLabs by default), check every line with speech-to-text, fit lines to their slots on the clock, fix pace and pronunciation without breaking sync, and ship takes so picture, captions and music stay locked. Also transcribes a recording for word timings, locally with whisper.cpp or with a speech-to-text API. Use when a video needs narration, captions synced to speech, a voice change, or a line regenerated. Part of the motion-film suite.
 ---
 
 # Voice-over
 
 The voice sets the clock. Word timestamps from the TTS drive caption reveals, visual cues and the music duck, so a take is not just audio: it is timing data.
+
+## 0. Choose the source
+
+Decided in the brief; confirm it here before spending anything.
+
+| Source | Use when | Cost | Path |
+|---|---|---|---|
+| **AI voice** (ElevenLabs by default) | No recording; a consistent brand voice; many languages; lines must re-time | Credits per character; needs a key | Sections 1 to 6 below |
+| **Own recording** | Founder or creator voice, tutorials, authenticity | Free with local transcription | [Own recording](#own-recording) |
+| **Voice in the footage** | Talking-head clips, narrated screen recordings | Free | `motion-film-footage` |
+| **None** | Muted loops, showreels, music-led pieces | Free | Skip this skill; captions or on-screen type carry the story |
+
+`node scripts/key.mjs --check` says whether an ElevenLabs key exists, without printing it. With no key, recommend the own recording or no voice, and say what the AI voice would cost.
 
 ## Ground rules
 
@@ -82,6 +95,21 @@ Visual cues that should meet a word use the word's absolute time: line placement
 - **Variants:** keep alternative voices or reads in `vo/variants/<name>/`, with their own `script.json` and an optional `timeline` block of clock overrides. Ship one by copying its takes and timing JSON into place. To render a variant without touching the shipped takes, swap in a copy, render, and restore under `trap` so a failure cannot leave the swap behind.
 - **Re-check:** after the final mix, speech-to-text the rendered video and build the sync table (`motion-film-qa`).
 
+## Own recording
+
+The owner records the script; the takes become timing data the same way as AI takes.
+
+1. **Record:** a quiet room, the mouth a hand's width from the microphone (a phone works), 48 kHz. One take per line (`V1.wav`, `V2.wav`), or one continuous take as a single line.
+2. **Trim** leading and trailing silence to about 0.2 s. Do not process further: the mixer high-passes, adds presence and compresses.
+3. **Transcribe for timings:**
+   ```sh
+   node scripts/transcribe.mjs vo/<film>/V1.wav vo/<film>/V1.json --lang en          # local whisper.cpp, free
+   node scripts/transcribe.mjs vo/<film>/V1.wav vo/<film>/V1.json --engine scribe   # ElevenLabs speech-to-text, paid
+   ```
+   Local transcription needs `npx remotion add @remotion/install-whisper-cpp` in the video project; the first run builds whisper.cpp and downloads the model (`--model base` by default; `small` or `medium` are more accurate and slower; `.en` models for English only). Its word times are re-timed against the audio's real pauses, which is close enough for captions (within about 0.2 s). Use `--engine scribe` when word-exact timing matters, such as a highlighted-word caption on fast speech.
+4. **Correct the text** in the JSON: names, terms and numbers as the script spells them. Keep the times.
+5. **Place on the clock** and continue with section 4 (check) and 5 (place), exactly as for AI takes. The mixer and the build read `V1.wav` like `V1.mp3`.
+
 ## Other providers
 
-The method needs two things from any provider: per-character or per-word timestamps, and a speech-to-text endpoint. Swap the request in `vo.mjs` and `stt.mjs` and keep the output shape: `{"text": …, "words": [{"w", "start", "end"}]}`.
+The method needs two things from any provider: per-character or per-word timestamps, and a speech-to-text endpoint. Swap the request in `vo.mjs`, `stt.mjs` or `transcribe.mjs` and keep the output shape: `{"text": …, "words": [{"w", "start", "end"}]}`.

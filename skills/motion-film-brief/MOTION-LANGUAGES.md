@@ -1,6 +1,6 @@
 # Motion languages
 
-A motion language is the physics of one video: how things enter, move, collide and leave, and how that sounds. Pick one per video from the subject's world, then keep every scene inside it. These five have been built and shipped; add your own in the same shape.
+A motion language is the physics of one video: how things enter, move, collide and leave, and how that sounds. Pick one per video from the subject's world, then keep every scene inside it. The first five have been built and shipped; the last three serve the content and footage kinds. Add your own in the same shape.
 
 Spring notation: `f` is natural frequency (Hz), `z` is damping ratio (`z < 1` overshoots, `z ≥ 1` does not).
 
@@ -48,6 +48,33 @@ Spring notation: `f` is natural frequency (Hz), `z` is damping ratio (`z < 1` ov
 - **Camera:** pushes, whips and fly-throughs, with motion blur on fast moves only.
 - **Sound:** a full arrangement (intro → build → riser → silence → drop → breakdown → final hit); pitched UI pops in key.
 - **Avoid:** blurring static text; shaking during reading.
+
+## Kinetic explainer
+
+- **Fits:** a term, a concept, an article's argument, a number that needs context.
+- **Signature moves:** the key word set large, then broken apart and rebuilt into a diagram; arrows that draw themselves from cause to effect; boxes that stack, split or merge as the idea develops; an underline or highlight that lands on the spoken keyword; a source card at the end.
+- **Timing:** each build lands on its spoken keyword (a cue from `alignWord`), 0.08-0.12 s before the word. Builds of 0.4-0.7 s, ease out quint; then hold. At most two ideas on screen; the old one dims before the new one arrives. Springs about `f 2.2, z 0.8`.
+- **Camera:** still, or a slow push toward the part being explained; a pan only to follow an arrow.
+- **Sound:** a soft bed; a light tick or pop on each build, pitched upward as the idea completes; silence under the definition.
+- **Avoid:** decorative motion, more than one moving element while a line is read, clip art.
+
+## Screen tutorial
+
+- **Fits:** how-tos, feature walkthroughs from a screen recording, onboarding, support videos.
+- **Signature moves:** a camera that zooms to the region where the action happens and back out between steps; a ring on the cursor at each click and a soft ripple; the rest of the screen dimmed while one control is in focus; a step chip ("Step 2 of 4"); keyboard shortcuts as key caps.
+- **Timing:** zoom in 0.5-0.7 s ease in-out cubic, hold through the action, zoom out before the next step. Never zoom while the person types or drags. Speed up dead time (loading, scrolling) with a visible marker rather than cutting it silently.
+- **Camera:** shots from `motion-film-footage` (`scale`, `x`, `y`); the full screen at least once per step so the viewer keeps the map.
+- **Sound:** the narration carries it; a quiet click on clicks, nothing else.
+- **Avoid:** constant zooming, zooming to text too small to read even when enlarged, hiding the cursor.
+
+## Talking head with overlays
+
+- **Fits:** a person explaining something to camera, cut into short clips for Reels, TikTok and Shorts.
+- **Signature moves:** jump cuts that remove pauses, alternating between two framings (1.0 and about 1.12) so each cut reads as deliberate; a split layout with the explanation above the speaker; a round bubble of the speaker while a full-screen explanation plays; captions with the spoken word highlighted; one keyword popping beside the face; a cutaway to a diagram while the voice continues.
+- **Timing:** layout changes take 0.35-0.45 s, ease in-out cubic; callouts arrive 0.1 s before the spoken keyword and leave before the next one; punch-ins on cuts are instant, punch-ins within a shot ease over 0.3-0.6 s.
+- **Camera:** the framing follows the face (the `x`, `y` of each shot); the eyes stay in the upper third; never crop the chin and forehead at once.
+- **Sound:** the speaker's voice cleaned and up front; a light bed ducked well under it; a subtle whoosh on layout changes only.
+- **Avoid:** covering the face or the mouth with captions or overlays, more than one overlay at once, captions in the platform's safe zones, cuts that change what the speaker meant.
 
 ## Writing a new one
 

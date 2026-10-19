@@ -8,6 +8,8 @@
 # MONO          the monospace family; every use is listed so you can check it is a timecode or a key hint
 # OLD_DOMAINS   retired domains or handles (regex alternation)
 # THEME         the theme file allowed to hold raw colour values
+# Also flags time-based CSS animation (transition, @keyframes, animation:) and will-change: in a frame-rendered
+# video every value must be a function of the frame, or renders flicker and differ between runs.
 set -uo pipefail
 src=${1:-src}
 theme=${THEME:-src/theme.ts}
@@ -43,6 +45,9 @@ section "Raw hex colours outside the theme"
 report "$(grep -rnE "#[0-9a-fA-F]{6}\b" "$src" --include='*.tsx' 2>/dev/null | grep -v "^${theme}:" | head -50)"
 section "Non-deterministic sources"
 report "$(grep -rnE "Math\.random|Date\.now|new Date\(" "$src" --include='*.tsx' --include='*.ts' 2>/dev/null)"
+
+section "Time-based CSS animation (must be frame-driven)"
+report "$(grep -rnE "transition:|@keyframes|animation:|will-change" "$src" --include='*.tsx' --include='*.ts' --include='*.css' 2>/dev/null)"
 
 printf "\n%d hit(s)\n" "$hits"
 [ "$hits" -eq 0 ]

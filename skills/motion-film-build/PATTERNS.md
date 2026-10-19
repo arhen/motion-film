@@ -74,7 +74,43 @@ New items drop from the top (`translateY(-150px → 0)`, spring `z 0.6-0.8`); ol
 
 ## Typed draft
 
-Characters appear at `cps` (90-140 per second, computed with `fps`). Draw the caret between the typed and untyped text, never after the hidden remainder.
+Text the viewer must read types at 20-30 characters per second with a human rhythm; a fast "generated" burst may run at 90-140 per second, then holds at least 1 s.
+
+```tsx
+// Cumulative typing times with rhythm: quick spaces, a pause after punctuation, a little seeded jitter.
+const typeTimes = (text: string, cps = 24, seed = 'type') =>
+	text.split('').reduce<number[]>((acc, ch, i) => {
+		const prev = i ? acc[i - 1] : 0;
+		const base = 1 / cps;
+		const k = ch === ' ' ? 0.6 : /[.,!?;:]/.test(text[i - 1] ?? '') ? 3.2 : 0.85 + 0.3 * random(`${seed}${i}`);
+		return [...acc, prev + base * k];
+	}, []);
+// shown = number of times <= t - start; draw the caret right after the shown text, solid while typing, blinking when idle.
+```
+
+New characters can arrive tinted with the accent and settle to ink over 0.2-0.4 s. Draw the caret between the typed and untyped text, never after the hidden remainder.
+
+## Rolling digits
+
+For a number that changes (a counter, a price, a score), roll each changed digit inside a mask: the old digit slides up and out while the new one slides in, 0.25-0.4 s, ease in-out cubic, with tabular figures so the width never jumps. Stagger digits right to left by 30-50 ms. Each digit's landing frame is a tick sound; thin the ticks when they come faster than about 12 per second.
+
+## Character scramble (one hero word only)
+
+Cycle random glyphs (seeded) through each position and lock them left to right on a schedule; each lock is a tick. Use it for one word that must feel computed (a code, a name being resolved), never for headlines or paragraphs, and lock within 0.6-0.9 s.
+
+## Velocity-matched cut
+
+```tsx
+// Outgoing shot accelerates into the cut; the incoming shot starts at the same speed, same direction.
+const exitSpeed = (move: (t: number) => number, tCut: number, dt = 1 / 120) => (move(tCut) - move(tCut - dt)) / dt; // px per second
+// Incoming element: x(t) = x0 + v * (t - tCut) for the first frames, blended into its own ease within 0.2-0.3 s.
+```
+
+Both sides at rest is the other valid cut. A move that stops just before the cut and a move that starts just after it reads as a stutter.
+
+## Object with weight
+
+Anticipation (squash about 1.2 × 0.75 over 8-12 frames), take-off stretch (about 0.85 × 1.28), an arced path, landing squash (about 1.25 × 0.7), spring back at z about 0.55; antennae, arms or tails lag the body by 3-6 frames. `squash()` in `anim.ts` gives the landing pair; scale around the contact point, not the centre.
 
 ## Loop shell
 

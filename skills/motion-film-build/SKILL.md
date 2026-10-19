@@ -25,7 +25,7 @@ video/
 ```
 
 - **Pin the Remotion version.** Register every video as a `<Composition>` whose duration is `Math.round(clock.seconds * clock.fps)`.
-- **Render settings:** h264, CRF 14-18, JPEG frames at quality 92-95, and an explicit concurrency.
+- **Render settings:** h264, CRF 14-18, `--color-space=bt709`, JPEG frames at quality 92-95, and an explicit concurrency.
 
 ### Formats
 
@@ -45,11 +45,40 @@ video/
 
 - **Entrances ease out; exits ease in; moves and camera ease in-out.** Use only the curves and springs in the video design system.
 - **Springs are analytic,** `springT(seconds, f, z)` (in `anim.ts`), so they work at any sub-frame time (needed by motion blur). Calm UI uses `z ≥ 0.75`; playful UI uses `z 0.4-0.6`. The logo never overshoots.
-- **Stagger lists** by 30-70 ms. Never animate everything at once.
-- **Hold to read.** Anything the viewer must read stays still for at least 1.5 s.
+- **Stagger lists** by 40-80 ms. Never animate everything at once.
+- **One hero move at a time.** Secondary elements start 100-200 ms after the hero and travel 50-70 % as far, so everything settles together instead of all at once.
+- **Distance sets duration.** A longer travel takes longer (a base plus a few ms per 10 px); identical durations for different distances look mechanical. Scale and zoom interpolate in log space (`logLerp`).
 - **Camera:** a slow push-in (3-7 % over the video) keeps static scenes alive. For a rack focus, blur and dim the background while the foreground arrives. A whip pan moves both scenes the same way, with motion blur.
 - **Life without noise:** low-amplitude drift (`noise2D`, 2-6 px) on floating elements. Deterministic randomness only (`random(seed)`); never `Math.random`.
 - **One memorable moment per video,** given the most frames and the cleanest frame around it.
+
+## 3a. Rhythm and readability
+
+People cannot read and track motion at the same time. Give them turns.
+
+- **Text and action alternate.** Nothing fast moves while a line is read, and a hero move never starts within about 0.2 s of a text arrival. Text being read drifts by no more than about 1.5 px per frame at 30 fps.
+- **Hold to read:** about 0.5 s plus 0.28 s per word, at least 1 s (`holdFor(words)`). At most about 8 words of on-screen text visible at once (captions excepted, since they are paced by the voice).
+- **Picture time.** In videos without voice, statements are on screen for at most about two thirds of the runtime, with at least 1.5 s of text-free picture in every 10 s.
+- **Typing speed by role.** Text typed for the viewer to read: 20-30 characters per second with human rhythm (quicker spaces, a short pause after punctuation). A fast "AI writes it" burst can run faster, but then holds for at least 1 s so it can be read.
+- **No dead holds.** No stretch longer than about 1.2 s without a visible change; a hold keeps slow life (0.3-1 px per frame of drift, or a 1-3 % scale creep). One planned near-still moment is allowed, on the key claim.
+- **The hook.** Frame 0 is composed and already moving, and something visibly changes within 0.3 s; muted feeds decide in a second.
+
+## 3b. Speed, blur and cuts
+
+- **Speed budget.** Measure the fastest on-screen speed per move (px per frame at the delivery fps). Ordinary moves stay under about 25 px per frame at 60 fps (50 at 30). Motion blur starts to help above roughly 12-40 px per frame. Above about 70 px per frame, blur leaves stepped copies: redesign the move as a cut, a mask wipe or a match cut instead. Frame-filling wipes are the exception.
+- **Velocity-matched cuts.** Either both sides of a cut are at rest, or the outgoing move speeds up into the cut and the incoming shot starts at that same speed, in the same screen direction. Match the properties that cross the seam (position, scale, colour). Show a resting pose once, not on both sides.
+- **Seam variety.** Several transition types per video, none used more than twice; never cross-fade two copies of one object (morph the one object instead).
+- **True-cycle loops** are better than a cross-fade when the design allows: things flowing through, an object leaving one side and re-entering the other, an end state that is the start state. Drive cycles with `loopPhase(t, period)` in whole cycles and drift with `loopNoise()`, so the frame after the last one equals frame 0. Keep text off the seam. The cross-fade into `Freeze(0)` is the fallback.
+
+## 3c. Interface and objects in motion
+
+- **Cause, action, result.** Every product action has a visible cause (a cursor press, a message arriving), then the product's real behaviour, then a result held for reading. The state changes on the frame the cause lands.
+- **Push in on what matters.** Story-carrying interactions get a 2-5× push-in; a wide shot of unreadable interface lasts at most about 1.7 s. The cursor appears only while someone acts.
+- **Objects with weight** (a mascot, a ball, an icon that jumps): anticipation before a move (a crouch about 1.2 wide by 0.75 tall over 8-12 frames), stretch on take-off (about 0.85 by 1.28), squash on landing (about 1.25 by 0.7), a spring back at z about 0.55, parts that lag the body by 3-6 frames, and paths that arc. Keep the volume roughly constant.
+
+## 3d. Sound from the motion
+
+Compute sound cue times from the animation itself, not by typing numbers: a pop at the spring's settle (`springSettle()`), a whoosh peak at the move's peak speed (`springPeakSpeed()`), an impact on the contact frame. Picture leads sound: a hit lands on its visual frame or one frame after it, never before. Export these times into the clock's `cues`, so the mixer reads them.
 
 Patterns with code (word-by-word reveal, bouncing-ball lead, card-to-node morph, iris close, stroke-dash trace reveal, text-to-particles, counting numbers, 3D assembly, notification stack, button press and result) are in [PATTERNS.md](PATTERNS.md).
 
@@ -65,7 +94,7 @@ Copy [templates/Subtitles.tsx](templates/Subtitles.tsx).
 
 ## 5. Loops and endings
 
-- **Seamless loop.** Build each video so frame 0 is a calm, readable opening still. Over the last 0.4-0.5 s, cross-fade into a frozen copy of the scene at frame 0 (`<Freeze frame={0}>`). [templates/FilmShell.tsx](templates/FilmShell.tsx) does this, and also layers the sign-off, the captions, the sample tag, the grain and the audio.
+- **Seamless loop.** Render frames 0 to N-1; frame N is frame 0 again and must not be rendered twice. Build each video so frame 0 is a composed, readable opening that is already moving. Over the last 0.4-0.5 s, cross-fade into a frozen copy of the scene at frame 0 (`<Freeze frame={0}>`). [templates/FilmShell.tsx](templates/FilmShell.tsx) does this, and also layers the sign-off, the captions, the sample tag, the grain and the audio.
 - **End hold:** the sign-off lockup holds at least 1.2 s; then fade the audio, not the picture.
 
 ## 6. Motion blur
@@ -83,11 +112,17 @@ Use [templates/MotionBlur.tsx](templates/MotionBlur.tsx) for accumulation blur: 
 - **Rebuilt components** take a size multiplier and content props, and pull colours from the theme. A raw hex value in a scene is a missing token.
 - **Third-party marks** come from the vendored set, preloaded.
 
+## 7a. Footage
+
+Real footage (a talking head, a screen recording) goes through `motion-film-footage`: the cut list, retiming and `Footage.tsx` (reframing, punch-ins, zooms and the full, split, bubble and cutaway layouts). Explanations draw in `explainRegion()`.
+
 ## 8. Review while building
 
 Render key frames at half scale while you work (`motion-film-qa/scripts/stills.mjs`) and look at them: one still per story beat, plus the first and last frame. When a video's scenes are all in place, run the bounded critique round in `motion-film-qa`.
 
-## Pitfalls (each one shipped a broken frame once)
+## Pitfalls
+
+The first nine rows each shipped a broken frame once; the rest are known traps of headless rendering.
 
 | Symptom | Cause | Fix |
 |---|---|---|
@@ -100,3 +135,10 @@ Render key frames at half scale while you work (`motion-film-qa/scripts/stills.m
 | Images pop in on the first frames | Images inside SVG do not delay rendering | Preload and decode them in the font gate |
 | Inconsistent layouts between renders | `Math.random`, `Date.now`, or state | `random(seed)`, `noise2D(seed, …)`, pure functions of `t` |
 | Long render times | Motion blur everywhere, heavy filters on many elements | Blur only in windows; cap blurred elements; render stills at 0.5 scale for review |
+| Slow text rises tick or shimmer | The headless browser snaps text to whole pixels at low speed | End rises with some speed left (ease out quint, not expo, on long rises), or move the parent with `transform` and keep the text still inside it |
+| Animated CSS `filter: blur()` on a large layer steps or flickers | Blur radius is quantised per frame | Cross-fade between a sharp and a pre-blurred copy, or keep the radius fixed and animate opacity |
+| Ghost frames on a blurring layer | `will-change` on an element whose filter animates | Remove `will-change` there |
+| A shape freezes or vanishes mid-move | A width, height or radius went negative | Clamp geometry at zero or above |
+| Gradients band in the encode | 8-bit gradients over large areas | Add grain or ±1-level noise to large gradients, or bake the gradient as a dithered image |
+| A loop hitches once per cycle | Frame N rendered as well as frame 0 | Render frames 0 to N-1 |
+| Sounds land a frame early on the final file | The audio was typed, not derived from the motion, or the encoder delayed the picture | Derive cue times from the motion; check A/V offset with `motion-film-qa/scripts/avlag.py` |

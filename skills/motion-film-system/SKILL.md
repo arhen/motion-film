@@ -46,7 +46,9 @@ Run `impeccable typeset` on the catalogue board when the scale is first set.
 - **Brand colours** (logo, identity accents, grounds) and **functional colours** (actions, sentiment, warnings) are separate roles even when the hex values look close. Keep both, named.
 - **Grounds:** decide light and dark grounds per motion language, and the logo colour on each.
 - **Film-only shades** (hairlines tuned for compression, glows, tints for large areas) are allowed when documented with a reason.
-- **One accent rule:** if the brand has a single accent, every scene spends it on one thing: the brand, the alert, or the one action.
+- **One accent rule:** if the brand has a single accent, every scene spends it on one thing: the brand, the alert, or the one action. Keep it under about 8 % of the frame's pixels outside one planned full-frame moment; new items can arrive in the accent and settle to neutral over 0.2-0.5 s. `motion-film-qa/scripts/accent.py` measures it on stills.
+- **Contrast:** text keeps at least 4.5:1 against what is behind it on every frame, including mid-transition and over footage.
+- **Flashes:** no more than three bright flashes per second, and no large saturated red flashes. Viewers with photosensitive epilepsy see your video too; `motion-film-qa/scripts/motion.py` flags it.
 
 ## 4. Logo and assets
 
@@ -56,6 +58,7 @@ Run `impeccable typeset` on the catalogue board when the scale is first set.
 - **Icons:** one icon library, one stroke weight.
 - **Illustrations and scenes:** built as vector shapes in code, in the brand palette, so they animate and stay consistent. Avoid stock footage.
 - **Fonts:** licensed files copied into the video project by a setup script, loaded with a font gate.
+- **End card:** the lockup assembles over about 1 s, then holds about 1 s while still moving slightly (a small push or settle); under about 2.5 s in all. One practical line (the URL, a date, the call to action) arrives after the name and stays readable for at least 1.5 s. The logo appears once, here, not on every scene.
 
 ## 5. Components
 
@@ -84,22 +87,50 @@ The usual set: cards and list items, chips and sentiment tags, buttons (rest, ho
 
 ## 7. Motion tokens
 
-Write these down and use only these.
+Write these down and use only these. They are defaults to start from, not laws; each motion language picks its subset.
 
-| Token | Typical value |
+**Curves**
+
+| Token | Value | Use |
+|---|---|---|
+| Ease out expo | cubic-bezier(0.16, 1, 0.3, 1) | text and logo reveals |
+| Ease out quint | cubic-bezier(0.22, 1, 0.36, 1) | calm, premium entrances |
+| Ease in-out cubic | cubic-bezier(0.65, 0, 0.35, 1) | moves, layout changes |
+| Ease in-out quart | cubic-bezier(0.76, 0, 0.24, 1) | camera pushes and pans (the softest) |
+| Ease in quint / expo | (0.64, 0, 0.78, 0) / (0.7, 0, 0.84, 0) | exits, falls |
+| Ease out back | cubic-bezier(0.34, 1.56, 0.64, 1) | a playful pop on objects only |
+| Linear | | rotation, progress bars, loop phase only |
+
+Enter with ease out, leave with ease in, and make exits 40-50 % shorter than entrances.
+
+**Springs** (natural frequency `f` in Hz, damping ratio `z`; in seconds, so they survive an fps change)
+
+| Token | Value | Feel |
+|---|---|---|
+| Calm, premium | f 2.2, z 0.75-0.85 | settles with a hint of life |
+| Playful | f 2.6, z 0.4-0.6 | visible bounce; never on the logo |
+| Kinetic | f 3.0-3.4, z 0.42-0.55 | snappy social motion |
+| Critically damped | z 1.0 | no overshoot at all |
+
+Below z 0.3 reads as cartoonish. Position and scale may overshoot; opacity and colour never do. Converting a Remotion spring config: `z = damping ÷ (2 × √(stiffness × mass))`, `f = √(stiffness ÷ mass) ÷ 2π`. Remotion's default (mass 1, damping 10, stiffness 100) is z 0.5, which is playful, not calm (`fromRemotionSpring()` in `anim.ts`).
+
+**Durations and spacing**
+
+| Token | Value |
 |---|---|
-| Ease out (entrances) | cubic-bezier(0.16, 1, 0.3, 1) or (0.22, 1, 0.36, 1) |
-| Ease in-out (moves, camera) | cubic-bezier(0.65, 0, 0.35, 1) |
-| Ease in (exits, falls) | cubic-bezier(0.64, 0, 0.78, 0) |
-| Spring, calm UI | f 2.2, z ≥ 0.75 |
-| Spring, playful UI | f 2.6, z 0.4-0.6 (never on the logo) |
-| Spring, kinetic | f 3.0-3.4, z 0.42-0.55 |
-| Stagger | 30-70 ms lists; 100-150 ms flicks |
+| Interface feedback | 100-200 ms |
+| Interface moves | 200-500 ms, longer for longer travel |
+| Hero reveals | 600-900 ms |
+| Camera moves | 0.6-3 s; the slowest move in a video is at least 3× the fastest |
+| Stagger | letters 1 frame; words 60-120 ms; list items 40-80 ms; flicks 100-150 ms |
+| Overlap | the next element starts when the previous is 30-50 % done |
+| Secondary motion | travels 50-70 % as far as the hero and starts 100-200 ms after it, so both settle together |
+| Ambient drift | under 5 % of the hero's travel; 2-6 px |
+| Parallax layers | foreground 1.0, middle 0.5, background 0.2 |
 | Caption word reveal | 0.15-0.2 s rise with a short blur |
-| Reading hold | ≥ 1.5 s for any line that must be read |
+| Reading hold | about 0.5 s plus 0.28 s per word, at least 1 s (`holdFor()`) |
 | Logo reveal | 0.5 s mask sweep, ease out, no overshoot |
-
-Springs are in seconds, never frames, so they survive an fps change. Each motion language (see `motion-film-brief`) picks its subset.
+| Phone exaggeration | key poses 10-30 % further than they would be for a large screen |
 
 ## 8. Sound tokens
 
@@ -113,6 +144,8 @@ Springs are in seconds, never frames, so they survive an fps change. Each motion
 - **One shared fictional dataset:** cast, businesses, handles, numbers. Every video quotes it, so numbers agree across videos.
 - **Label:** a quiet sample-data tag, styled like the product's own, on product scenes.
 - **No invented** customers, testimonials, metrics, prices or dates.
+- **The data checks itself.** Write the dataset as code that asserts its own consistency when it loads: weekdays match dates, counts match the items listed, sums and percentages add up, sorted lists are sorted, story facts hold (the person who paid is the person in the receipt). A frame paused anywhere, in-betweens included, must still make sense.
+- **Proofing:** "No messages", never "0 messages", and "1 message", never "1 messages"; one date, time and currency format; typographic quotes and apostrophes; tabular figures for every number that changes; no placeholder names or lorem ipsum. A word revealed letter by letter must not spell another word on the way.
 
 ## 10. The catalogue board and its review
 
