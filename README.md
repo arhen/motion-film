@@ -54,7 +54,7 @@ npx skills@latest add arhen/motion-film --skill '*' -g       # for your user, al
 npx skills@latest add arhen/motion-film --skill '*' -a claude-code   # one agent only
 ```
 
-No Node? Copy the folders by hand: see [Manual install](#manual-install).
+No Node? Copy the folders by hand: see [Manual install](#manual-install). Already installed an older version? See [Upgrade](#upgrade).
 
 **3. Ask your agent for a video.** The entry skill is `motion-film`; it runs the phases in order and asks you only the taste calls. If your request does not say what kind of video, it offers a short menu first, and it asks where the voice comes from before spending anything.
 
@@ -100,7 +100,8 @@ No Node? Copy the folders by hand: see [Manual install](#manual-install).
    - which [companion skills](#companion-skills-optional) are optional;
    - what they need ([Requirements](#requirements));
    - how to start: "ask for a video; the entry skill is `motion-film`".
-6. **When you use the skills:**
+6. **If the skills are already installed** (the folders exist, or `skills-lock.json` lists `motion-film`), you are upgrading: follow [Upgrade](#upgrade). Run the same install command with the same scope; `npx skills update` alone misses newly added skills. Then tell the user what changed from [CHANGELOG.md](CHANGELOG.md), and ask before overwriting scripts or templates they copied into their video project.
+7. **When you use the skills:**
    - load `motion-film` first and follow its phases in order;
    - copy scripts and templates into the user's video project before running them;
    - never commit generated media.
@@ -247,7 +248,37 @@ cp -R /tmp/motion-film/skills/motion-film* <skills dir>/
 | Gemini CLI | `~/.gemini/skills/` | `.agents/skills/` |
 | GitHub Copilot | `~/.copilot/skills/` | `.agents/skills/` |
 
-To update, run the install again, or `npx skills update`.
+If your project keeps its skills in `.agents/skills/` with symlinks from `.claude/skills/`, install for both at once, so the installer keeps one copy and the symlinks: `npx skills@latest add arhen/motion-film --skill '*' -a claude-code -a codex`.
+
+## Upgrade
+
+**1. Re-run the install command,** with the same flags you installed with (`-g`, `-a ...`). It updates every skill and adds any new one:
+
+```sh
+npx skills@latest add arhen/motion-film --skill '*'
+```
+
+`npx skills update` refreshes the skills you already have but does not add new ones (v0.2.0 added `motion-film-footage`), so the entry skill would point to a skill you do not have. Prefer the command above.
+
+**2. Pin or roll back** to a version (git tags; see [CHANGELOG.md](CHANGELOG.md)):
+
+```sh
+npx skills@latest add https://github.com/arhen/motion-film/tree/v0.3.0 --skill '*'
+```
+
+**3. Update your video project's copies.** The skills tell you to copy scripts and templates into your project, and those copies do not change when the skills do. Compare them with the new versions:
+
+```sh
+diff -ru <skills dir>/motion-film-build/templates src/film        # and the same for the scripts you copied
+```
+
+Copy over the files you never edited. Merge the ones you did by hand. The "Check your project" notes in the changelog list every change that alters output.
+
+**4. Manual install:** pull or re-clone the repository and copy `skills/motion-film*` over the old folders.
+
+## Versions
+
+Each release is a git tag with notes in [CHANGELOG.md](CHANGELOG.md). Watch the repository's releases to hear about new ones.
 
 ## What is inside
 
