@@ -11,14 +11,18 @@ The footage is the voice and the clock's backbone; motion design explains around
 
 - **Rights and consent.** The owner owns the footage, and the people in it agreed to it being used and edited. Write it in the brief.
 - **Meaning.** A cut never changes what the speaker meant: no splicing words into a sentence they did not say, no cutting a qualifier ("not", "only", "sometimes") out of a claim, no reordering that flips an argument.
-- **Copy the scripts and templates** into the video project: `scripts/` (these, plus `motion-film-voice/scripts/transcribe.mjs`) and `src/film/` (`Footage.tsx` next to `anim.ts`). Put the footage in `public/footage/`; keep it out of git.
+- **Copy the scripts and templates** into the video project: `scripts/` (these, plus `motion-film-voice/scripts/transcribe.mjs`, `models.mjs` and `key.mjs`) and `src/film/` (`Footage.tsx` next to `anim.ts`). Put the footage in `public/footage/`; keep it out of git.
 
-## 1. Probe and transcribe
+## 1. Probe, prepare and transcribe
+
+Follow the required [FFmpeg pipeline](../motion-film/FFMPEG.md) first: probe every source with `ffmpeg-skill`, prepare HDR/VFR/noisy media only as needed, and probe the prepared result. Preparation must finish before transcription or cut selection. Set `FFMPEG_SCRIPTS` during preflight.
 
 ```sh
-bash scripts/probe.sh public/footage/talk.mp4                         # size, fps, length, loudness (motion-film-qa)
+python3 "$FFMPEG_SCRIPTS/probe.py" public/footage/talk.mp4 --json > out/qa/talk-source.json
 node scripts/transcribe.mjs public/footage/talk.mp4 footage/talk.words.json --lang en
 ```
+
+The example assumes the probe found no preparation needed. Otherwise transcribe the prepared file instead and use that same path in `clock.footage.file`. Preserve the original and record the derivation. Do not bake the clock's cuts with upstream `cut.py`/`silence.py`: `retime.py` and `Footage.tsx` already apply those segments; applying them twice breaks sync.
 
 - **Local and free** by default (whisper.cpp through `@remotion/install-whisper-cpp`; add it with `npx remotion add @remotion/install-whisper-cpp`). Word times are re-timed against the audio's real pauses: good for cut lists and captions, within about 0.2 s.
 - **`--engine scribe`** (paid) gives word-exact times and handles names and mixed languages better. Use it for highlighted-word captions on fast speech.

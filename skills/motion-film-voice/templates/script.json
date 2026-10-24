@@ -1,7 +1,7 @@
 {
 	"voiceId": "<voice id from your registry>",
-	"modelId": "eleven_v3",
-	"settings": {"stability": 0.55, "similarity_boost": 0.8},
+	"modelId": "latest",
+	"settings": {"stability": 0.5, "similarity_boost": 0.8},
 	"lines": [
 		{"id": "V1", "text": "First line, six to twelve words.", "direction": "[calm, warm, conversational] "},
 		{"id": "V2", "text": "Second line of the script.", "direction": "[calm, warm, conversational] "},

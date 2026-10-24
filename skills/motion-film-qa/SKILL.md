@@ -90,6 +90,8 @@ Point at frames ("at 4.2 s the cards land before the voice says 'three'"), not a
 
 Run all of these on the rendered output (the MP4 or WebM), not on stills. Stills render scenes alone and miss stacking bugs, blank frames between scenes, and frozen-copy glitches.
 
+**Required file gate:** follow [FFMPEG.md §3](../motion-film/FFMPEG.md#3-verify-every-master-and-delivery-encode) on every master and final encode: upstream `probe.py`, this skill's `media-check.py` against the clock, upstream `check.py` for the actual destination, and an inspected `look.py` sheet. Preserve full JSON evidence. Supply expected dimensions explicitly for alternate formats/web derivatives. A successful platform check does not establish story timing, word sync, brand correctness or an inaudible seam; the checks below remain required. Report every warning or unmeasured value with its disposition.
+
 | Check | Command | Pass |
 |---|---|---|
 | Frames at 0, 25, 50, 75 and 100 %, plus the sign-off | `bash scripts/frames.sh out/<id>.mp4 out/qa 0% 25% 50% 75% 100% <signoff s>` | each frame reads, is on-brand, has no blank or covered scene |
@@ -131,6 +133,7 @@ Open the page with `browser-use`, using a fresh, throwaway browser that is close
 - [scripts/frames.sh](scripts/frames.sh): frames from the rendered file at percentages or seconds, plus a sheet.
 - [scripts/seam.sh](scripts/seam.sh): loop seam PSNR and audio jump.
 - [scripts/sync.py](scripts/sync.py): expected vs heard word onsets.
+- [scripts/media-check.py](scripts/media-check.py): gate an upstream probe against clock duration, fps, frame count, dimensions and video start offset; no FFmpeg reimplementation.
 - [scripts/probe.sh](scripts/probe.sh): codec, size, duration, fps, loudness, true peak.
 - [scripts/brand-audit.sh](scripts/brand-audit.sh): retyped wordmark, banned fonts, monospace misuse, old domains, raw colours, non-deterministic sources, time-based CSS animation.
 - [scripts/motion.py](scripts/motion.py): hook, dead holds, pops, frozen frames, flash risk and the energy curve, from the rendered file.

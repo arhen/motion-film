@@ -10,6 +10,7 @@ import {execFileSync} from 'node:child_process';
 import {mkdtempSync, readFileSync, rmSync, writeFileSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {basename, join, resolve} from 'node:path';
+import {SCRIBE_MODEL} from './models.mjs';
 
 const args = process.argv.slice(2);
 const take = (flag, fallback) => {
@@ -33,7 +34,7 @@ let words = [];
 if (engine === 'scribe') {
 	const {elevenLabsKey} = await import('./key.mjs');
 	const form = new FormData();
-	form.append('model_id', 'scribe_v1');
+	form.append('model_id', SCRIBE_MODEL);
 	if (lang) form.append('language_code', lang);
 	form.append('timestamps_granularity', 'word');
 	form.append('tag_audio_events', 'false');

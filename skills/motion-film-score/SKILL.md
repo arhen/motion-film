@@ -12,6 +12,8 @@ Two ways to get music, both locked to the clock:
 
 Either way: keep it under the voice, and say plainly that a person must listen to it.
 
+Follow the required [FFmpeg pipeline](../motion-film/FFMPEG.md): probe supplied music, SFX and voice inputs before planning from them, and verify the final encoded audio as well as the WAV. This skill's mixer and `clock.json` retain ownership of cues, placement, ducking, loops and mastering. Do not add a second upstream music bed or normalize an approved mix automatically at export.
+
 ## 1. Tempo and form from the clock
 
 - **Whole bars.** Choose the tempo so the video's length is a whole number of bars: `bpm = beats × 60 ÷ seconds`. For example, 32 beats over 15.5 s is 123.9 BPM, which gives 8 bars.

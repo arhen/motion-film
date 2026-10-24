@@ -7,6 +7,8 @@ description: Build motion videos in Remotion (React) from a brief, a clock file 
 
 The picture is a pure function of the frame. Everything that moves reads the time, and every time comes from the clock file. Craft lives in curves, timing and restraint; correctness lives in the pitfalls at the bottom of this page.
 
+The required [FFmpeg pipeline](../motion-film/FFMPEG.md) prepares source media before this phase and encodes/checks the rendered files afterwards. Remotion keeps ownership of layouts, captions, reframing and animation. Do not substitute upstream social templates or maintain a second edit timeline.
+
 For motion craft decisions on a single element (curve, duration, what to animate at all), load `animate`. To name an effect, load `animation-vocabulary`.
 
 ## 1. Skeleton

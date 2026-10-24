@@ -4,6 +4,22 @@ Versions are git tags. Install or roll back to one with `npx skills@latest add h
 
 "Check your project" lists changes that alter the output of scripts or templates you may already have copied into a video project.
 
+## v0.4.0 (2026-10-24)
+
+**Added**
+- Required `ffmpeg-skill` v2.14.0 processing layer: preflight capability detection, measured source preparation, approved-master encoding/remuxing and final-file destination checks/contact sheets.
+- Shared integration contract: Remotion owns the picture; `clock.json` owns timing. No separate edit timeline, duplicate captions, silent trimming or post-approval fps changes.
+- `media-check.py`: verifies output probe metadata against the clock and planned dimensions, with exact frame counts when available.
+- Setup/upgrade instructions for the pinned dependency and a processing/evidence section in the delivery README.
+- ElevenLabs model preflight: resolve the newest available offline flagship from the live catalogue, always send its concrete ID, reject stale script/per-line overrides before spending, and record model/voice provenance with each take. No silent v2 downgrade.
+- Current batch Scribe v2 for paid transcription; generation errors and invalid alignment now fail instead of quietly continuing. Read-only live model preflight selected `eleven_v4` on the release account; no paid audio was generated.
+
+**Check your project**
+- Install `ffmpeg-skill` v2.14.0 at the same scope as all nine motion-film skills; preflight now blocks without it.
+- Copy `motion-film-qa/scripts/media-check.py` into your video project's scripts. Run the required file gate on masters and final encodes, not only on the master.
+- Prepare source media before transcription; if an existing source changes, rebuild word timings, clock segments, cues, mix and QA together. Existing render/audio templates are unchanged.
+- Update copied `vo.mjs`, `stt.mjs`, `transcribe.mjs`, and new `models.mjs` together with `key.mjs`. Set new voice scripts to `modelId: "latest"`; stale v2 (or superseded pinned) configs now stop before generation. The template uses stability 0.5. Do not regenerate existing shipped audio just to upgrade its model.
+
 ## v0.3.0 (2026-10-20)
 
 **Added**

@@ -4,6 +4,7 @@
 import {readFileSync, writeFileSync} from 'node:fs';
 import {basename} from 'node:path';
 import {elevenLabsKey} from './key.mjs';
+import {SCRIBE_MODEL} from './models.mjs';
 
 const args = process.argv.slice(2);
 const take = (flag) => {
@@ -17,7 +18,7 @@ const results = {};
 
 for (const file of args) {
 	const form = new FormData();
-	form.append('model_id', 'scribe_v1');
+	form.append('model_id', SCRIBE_MODEL);
 	if (lang) form.append('language_code', lang);
 	form.append('timestamps_granularity', 'word');
 	form.append('tag_audio_events', 'false');
@@ -25,6 +26,7 @@ for (const file of args) {
 	const res = await fetch('https://api.elevenlabs.io/v1/speech-to-text', {method: 'POST', headers: {'xi-api-key': key}, body: form});
 	if (!res.ok) {
 		console.error(`${file}: ${res.status} ${await res.text()}`);
+		process.exitCode = 1;
 		continue;
 	}
 	const body = await res.json();

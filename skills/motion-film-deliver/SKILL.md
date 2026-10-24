@@ -7,6 +7,8 @@ description: Deliver finished motion videos. Covers master renders, web encodes 
 
 Delivery is part of the craft. The right file at the right size, a poster that tells the story, and a README someone can act on without asking.
 
+Delivery always uses the required [FFmpeg pipeline](../motion-film/FFMPEG.md): probe the approved master, inspect an export dry run, encode/remux without changing the clock, then verify every final file. If the master already meets the destination, prefer `export.py --preset copy --no-scale --allow-long`; otherwise encode once from the master. Social presets force 30 fps, so do not use them on a composition with another frame rate. Never auto-trim, crop, add captions or re-normalize an approved mix to satisfy a preset.
+
 ## 1. Masters
 
 - **Picture:** render each composition as h264 at CRF 14-18 (showreels 14, web sources 18), yuv420p, with `--color-space=bt709` so players do not shift the colours.
@@ -36,6 +38,8 @@ This writes `<id>.mp4` (h264 CRF 26, `+faststart`, AAC 96 kbps), `<id>.webm` (VP
 | A page | `encode-web.sh` mp4 + webm + poster | See the embed guidance below. |
 
 Choose the canvas before the first frame: a different aspect is a different layout, not a re-crop.
+
+After every encode/remux (including both web files), run upstream `probe.py`, `check.py` and `look.py`, plus `scripts/media-check.py clock.json <probe.json>` and the suite's A/V, loudness and loop checks. For resized outputs or alternate compositions, pass the planned `--width` and `--height`. Use the actual destination in `check.py`, or `custom` for web. Record any warning; a platform limit never authorizes trimming the film. The commands and timing safeguards are in [FFMPEG.md](../motion-film/FFMPEG.md).
 
 ### GIF (when a platform or a doc needs one)
 
@@ -72,7 +76,8 @@ Copy [templates/README-films.md](templates/README-films.md). For each video, wri
 - the motion language;
 - the script table (voice-over start times and lines; the sign-off marked as not voiced if it is not);
 - the files, with sizes and durations;
-- shared behaviour (loop, captions, sample data, sound in the browser), the rebuild commands, and any deviation from the brief, with its reason.
+- shared behaviour (loop, captions, sample data, sound in the browser), the rebuild commands, and any deviation from the brief, with its reason;
+- the `ffmpeg-skill` version, effective FFmpeg build/paths, preparation decisions, exact encode commands and final-file evidence paths.
 
 Generate the tables from the clock, the scripts and `ffprobe` output rather than typing them.
 

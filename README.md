@@ -14,10 +14,13 @@
 
 **motion-film** is a set of agent skills that teach your coding agent to make **consistent, high-craft motion videos in code**, for a product or for content: landing-page loops, feature showcases, launch films, showreels, tutorials, explainers of a term or an article, and clips cut from your own talking-head footage for Reels, TikTok and Shorts.
 
+The fixed pipeline is **FFmpeg media prep → Remotion picture → FFmpeg encoding and verification**. [ffmpeg-skill](https://github.com/kajisho5/ffmpeg-skill/tree/v2.14.0) is a required processing dependency, not an optional companion or a Remotion replacement. The nine motion-film skills direct the work.
+
 The idea is simple: a video is frontend work with a clock. Every frame is a designed screen, so it is built from your design system, critiqued like UI, and checked with evidence. Picture, voice-over, music and sound effects all read **one clock file**, so a spoken word, a sound hit and a motion land on the same frame.
 
 ```sh
 npx skills@latest add arhen/motion-film --skill '*'
+npx skills@latest add https://github.com/kajisho5/ffmpeg-skill/tree/v2.14.0 --skill ffmpeg-skill
 ```
 
 <br>
@@ -46,13 +49,14 @@ npx skills@latest add arhen/motion-film --skill '*'
 
 **1. Have a Remotion project.** These skills do not create one. Follow Remotion's guide ([remotion.dev/docs](https://www.remotion.dev/docs)), usually `npx create-video@latest`.
 
-**2. Install the skills** (all nine; they work as a suite):
+**2. Install the pipeline** (all nine skills plus the required, tested FFmpeg dependency):
 
 ```sh
-npx skills@latest add arhen/motion-film --skill '*'          # into this project
-npx skills@latest add arhen/motion-film --skill '*' -g       # for your user, all projects
-npx skills@latest add arhen/motion-film --skill '*' -a claude-code   # one agent only
+npx skills@latest add arhen/motion-film --skill '*'
+npx skills@latest add https://github.com/kajisho5/ffmpeg-skill/tree/v2.14.0 --skill ffmpeg-skill
 ```
+
+These install into this project. Add `-g` to **both** commands for your user (all projects), or `-a claude-code` to **both** to target one agent. Keep them at the same scope. No separate FFmpeg MCP server is required.
 
 No Node? Copy the folders by hand: see [Manual install](#manual-install). Already installed an older version? See [Upgrade](#upgrade).
 
@@ -76,21 +80,22 @@ No Node? Copy the folders by hand: see [Manual install](#manual-install). Alread
 
 > **If you are an AI agent** and a user asked you to install or use this repository, follow these steps exactly. Ask the user before anything that overwrites files, costs money, or is not listed here.
 
-1. **Install all nine skills together.** They reference each other's scripts by relative path, so a single skill on its own is incomplete.
+1. **Install all nine skills and the required FFmpeg dependency.** A single skill on its own is incomplete. The dependency is pinned to the tested v2.14.0; it is installed separately, not vendored here.
    ```sh
    npx skills@latest add arhen/motion-film --skill '*' -y
+   npx skills@latest add https://github.com/kajisho5/ffmpeg-skill/tree/v2.14.0 --skill ffmpeg-skill -y
    ```
-   - Add `-g` to install for the user (all projects) instead of the current project. If the user did not say, ask which they want.
-   - Add `-a <agent>` to target one agent, for example `-a claude-code`, `-a codex`, `-a pi`, `-a cursor`, `-a opencode`.
+   - Add `-g` to both commands to install for the user (all projects) instead of the current project. If the user did not say, ask which they want.
+   - Add the same `-a <agent>` to both commands to target one agent, for example `-a claude-code`, `-a codex`, `-a pi`, `-a cursor`, `-a opencode`.
 2. **If `npx` is unavailable or the command fails**, install by hand (see [Manual install](#manual-install)): clone the repository, copy every `skills/motion-film*` folder into the agent's skills folder, and do not overwrite an existing folder of the same name without asking.
-3. **Verify.** There must be nine folders (`motion-film`, `motion-film-brief`, `motion-film-system`, `motion-film-voice`, `motion-film-footage`, `motion-film-score`, `motion-film-build`, `motion-film-qa`, `motion-film-deliver`), each with a `SKILL.md` whose `name` matches the folder.
+3. **Verify.** There must be nine motion-film folders (`motion-film`, `motion-film-brief`, `motion-film-system`, `motion-film-voice`, `motion-film-footage`, `motion-film-score`, `motion-film-build`, `motion-film-qa`, `motion-film-deliver`), plus `ffmpeg-skill`: ten installed skills in total. Each has a matching `SKILL.md`. The dependency also needs its complete scripts/helpers and `package.json` reporting `2.14.0`. Run the doctor and contract checks in [FFMPEG.md](skills/motion-film/FFMPEG.md); missing required capabilities block use.
    ```sh
    ls <skills dir> | grep motion-film
    head -3 <skills dir>/motion-film/SKILL.md
    ```
 4. **Do not, as part of installing:**
    - create a Remotion project;
-   - install companion skills;
+   - install optional companion skills (the required `ffmpeg-skill` above is part of installation);
    - generate voice-over or call any paid API;
    - commit anything.
 
@@ -103,7 +108,8 @@ No Node? Copy the folders by hand: see [Manual install](#manual-install). Alread
 6. **If the skills are already installed** (the folders exist, or `skills-lock.json` lists `motion-film`), you are upgrading: follow [Upgrade](#upgrade). Run the same install command with the same scope; `npx skills update` alone misses newly added skills. Then tell the user what changed from [CHANGELOG.md](CHANGELOG.md), and ask before overwriting scripts or templates they copied into their video project.
 7. **When you use the skills:**
    - load `motion-film` first and follow its phases in order;
-   - copy scripts and templates into the user's video project before running them;
+   - follow the required [FFmpeg pipeline](skills/motion-film/FFMPEG.md) at preflight, ingest, QA and delivery; keep Remotion for the picture and `clock.json` for all timing;
+   - copy motion-film scripts/templates into the user's video project before running them; run upstream FFmpeg tools from their complete installed package;
    - never commit generated media.
 
 <br>
@@ -121,7 +127,7 @@ No Node? Copy the folders by hand: see [Manual install](#manual-install). Alread
 | [`motion-film-brief`](skills/motion-film-brief/SKILL.md) | **1. Brief.** The kind of video, the voice source, one story and one motion language per video, generic-story checks, the script, a numeric direction sheet, the clock skeleton. |
 | [`motion-film-system`](skills/motion-film-system/SKILL.md) | **2. Design system.** Video theme from your tokens, type minimums per format, logo and asset rules, components, a catalogue board. |
 | [`motion-film-voice`](skills/motion-film-voice/SKILL.md) | **3. Voice-over.** AI voice or your own recording: audition, takes with word timings, local or API transcription, speech-to-text checks, slot fitting. |
-| [`motion-film-footage`](skills/motion-film-footage/SKILL.md) | **3. Footage.** Clips from your own recordings: transcript, pauses, a cut list that never splits a word, reframing, punch-ins, zooms, split, bubble and cutaway layouts. |
+| [`motion-film-footage`](skills/motion-film-footage/SKILL.md) | **3. Footage.** Required FFmpeg probing/preparation before transcription. Clips from your own recordings: transcript, pauses, a cut list that never splits a word, reframing, punch-ins, zooms, split, bubble and cutaway layouts. |
 | [`motion-film-score`](skills/motion-film-score/SKILL.md) | **4. Music and SFX.** Synthesized score or a supplied track, SFX on cues, ducking, loops, loudness. |
 | [`motion-film-build`](skills/motion-film-build/SKILL.md) | **5. Picture.** Remotion patterns, one layout per format, captions, loop seams, motion blur, pitfalls. |
 | [`motion-film-qa`](skills/motion-film-qa/SKILL.md) | **6. Critique and QA.** One bounded critique round with a refute pass and feedback translated into numbers, then evidence from the real file. |
@@ -197,8 +203,9 @@ Critique is bounded: render the boards, critique once, fix everything in one bat
 ## Requirements
 
 - A **Remotion** project ([setup guide](https://www.remotion.dev/docs)).
-- **Node 20+**, **Python 3** with numpy, scipy and Pillow, and **ffmpeg** with libx264, libvpx-vp9, libopus and aac.
-- For an AI voice: an **ElevenLabs** account (text to speech with timestamps, speech to text). Optional; your own recording or no voice works too.
+- **Node 22.20+** (required by the current skills installer), **Python 3.10+** with numpy, scipy and Pillow, and **FFmpeg 6.1+** with libx264, libvpx-vp9, libopus and aac. Additional preparation tools need their corresponding filters; preflight checks the job's capabilities.
+- **ffmpeg-skill v2.14.0**, installed at the same scope as the suite (commands above). This required dependency is pinned independently of motion-film.
+- For an AI voice: an **ElevenLabs** account (text to speech with timestamps, speech to text). Optional; your own recording or no voice works too. New takes resolve the latest flagship model from the live catalogue, send its ID explicitly and refuse stale v2 overrides or fallback. Existing shipped takes are not regenerated. Paid transcription uses Scribe v2.
 - For free local transcription (your own recording, footage): `npx remotion add @remotion/install-whisper-cpp` in the video project. The first run builds whisper.cpp (needs git, make and a C compiler) and downloads a model.
 - For capturing your product and checking embeds: **Chrome** and a browser automation tool.
 
@@ -212,6 +219,12 @@ Tested on macOS. Linux should work; on Windows, use WSL.
 - **Music:** a synthesized score needs no licence. A supplied track needs a written licence that covers the use (web, ads, social).
 - **Footage:** you need the rights to it and the consent of the people in it. Cuts never change what a speaker meant.
 - **Sample data:** people, businesses and numbers on screen are either real and approved, or fictional and labelled as sample data.
+
+## Required processing dependency
+
+[ffmpeg-skill v2.14.0](https://github.com/kajisho5/ffmpeg-skill/tree/v2.14.0) is part of every job: capability preflight, measured source preparation where needed, approved-master encoding/remuxing, destination checks and inspected output sheets. It does not replace Remotion or the suite's clock, design system, score and evidence QA. Missing installation blocks the pipeline, including generated-only videos.
+
+The integration contract and commands live in [skills/motion-film/FFMPEG.md](skills/motion-film/FFMPEG.md). Source preparation happens before word timing; final encodes must preserve the approved clock. `media-check.py` checks their duration, frame rate, frame count and planned dimensions. Existing web and exact-timing GIF encoders remain pipeline stages.
 
 ## Companion skills (optional)
 
@@ -237,6 +250,9 @@ For browser-harness, follow its [install guide](https://github.com/browser-use/b
 ```sh
 git clone --depth 1 https://github.com/arhen/motion-film /tmp/motion-film
 cp -R /tmp/motion-film/skills/motion-film* <skills dir>/
+git clone --depth 1 --branch v2.14.0 https://github.com/kajisho5/ffmpeg-skill /tmp/ffmpeg-skill
+mkdir -p <skills dir>/ffmpeg-skill
+cp -R /tmp/ffmpeg-skill/{SKILL.md,scripts,templates,references,docs,mcp,package.json,LICENSE} <skills dir>/ffmpeg-skill/
 ```
 
 | Agent | For your user | For one project |
@@ -256,6 +272,7 @@ If your project keeps its skills in `.agents/skills/` with symlinks from `.claud
 
 ```sh
 npx skills@latest add arhen/motion-film --skill '*'
+npx skills@latest add https://github.com/kajisho5/ffmpeg-skill/tree/v2.14.0 --skill ffmpeg-skill
 ```
 
 `npx skills update` refreshes the skills you already have but does not add new ones (v0.2.0 added `motion-film-footage`), so the entry skill would point to a skill you do not have. Prefer the command above.
@@ -274,7 +291,7 @@ diff -ru <skills dir>/motion-film-build/templates src/film        # and the same
 
 Copy over the files you never edited. Merge the ones you did by hand. The "Check your project" notes in the changelog list every change that alters output.
 
-**4. Manual install:** pull or re-clone the repository and copy `skills/motion-film*` over the old folders.
+**4. Manual install:** pull or re-clone the repository and copy `skills/motion-film*` over the old folders. Also install the complete pinned FFmpeg dependency as above. Do not let a general skill update silently advance that pin; validate an upstream upgrade before adopting it.
 
 ## Versions
 
@@ -284,19 +301,19 @@ Each release is a git tag with notes in [CHANGELOG.md](CHANGELOG.md). Watch the 
 
 ```
 skills/
-  motion-film/            entry point: phases, gates, preflight, lessons
+  motion-film/            entry point: phases, gates, preflight, FFMPEG.md integration, lessons
   motion-film-brief/      KINDS.md, MOTION-LANGUAGES.md, templates/BRIEF.md, templates/clock.json
   motion-film-system/     templates/theme.ts, Catalog.tsx, VIDEO-SYSTEM.md
-  motion-film-voice/      scripts/vo.mjs, stt.mjs, transcribe.mjs, slotfit.py, voice-stats.py
+  motion-film-voice/      scripts/models.mjs, vo.mjs, stt.mjs, transcribe.mjs, slotfit.py, voice-stats.py
   motion-film-footage/    scripts/pauses.py, retime.py, quiet.py, templates/Footage.tsx
   motion-film-score/      scripts/synth.py, mix_template.py, beats.py, snap.py, onsets.py
   motion-film-build/      PATTERNS.md, templates/anim.ts, clock.ts, Subtitles.tsx, FilmShell.tsx …
-  motion-film-qa/         scripts/stills.mjs, frames.sh, grid.py, onion.py, motion.py, seam.sh, sync.py, avlag.py, accent.py, probe.sh, brand-audit.sh
+  motion-film-qa/         scripts/media-check.py, stills.mjs, frames.sh, grid.py, onion.py, motion.py, seam.sh, sync.py, avlag.py, accent.py, probe.sh, brand-audit.sh
   motion-film-deliver/    scripts/encode-web.sh, templates/README-films.md
 assets/                   README diagrams (python3 assets/build.py rebuilds them)
 ```
 
-Copy scripts and templates into your video project before running them; Node resolves packages from the script's own folder.
+Copy motion-film scripts and templates into your video project before running them; Node resolves packages from the script's own folder. Run required `ffmpeg-skill` scripts from their complete installed package, not as isolated copies.
 
 ## Contributing
 
@@ -305,6 +322,15 @@ New motion languages, patterns, voice providers and formats are welcome. A contr
 - pass the same gates the skills ask of a video;
 - include the evidence: boards, frames, numbers;
 - stay generic, with no product names, data or paths from one project.
+
+## Checks
+
+```sh
+node --test tests/voice-models.test.mjs
+FFMPEG_SKILL_DIR=<installed ffmpeg-skill directory> python3 -m unittest discover -s tests -v
+```
+
+Voice tests mock the provider and spend no credits. The FFmpeg integration test processes synthetic media through the pinned upstream tools, remuxes and both web encodes. Without `FFMPEG_SKILL_DIR`, that integration test is explicitly skipped; the other checks still run.
 
 ## Licence
 

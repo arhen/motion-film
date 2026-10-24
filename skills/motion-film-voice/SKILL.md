@@ -7,6 +7,8 @@ description: Voice-over for motion videos. Choose the voice source (an AI voice,
 
 The voice sets the clock. Word timestamps from the TTS drive caption reveals, visual cues and the music duck, so a take is not just audio: it is timing data.
 
+Follow the required [FFmpeg pipeline](../motion-film/FFMPEG.md): probe recordings and generated takes before planning their slots. Any necessary recording cleanup happens before transcription; never process a shipped take independently of its word timings. The clock-based mixer still owns placement, ducking and mastering.
+
 ## 0. Choose the source
 
 Decided in the brief; confirm it here before spending anything.
@@ -24,20 +26,22 @@ Decided in the brief; confirm it here before spending anything.
 
 - **It costs money.** Check the account's credits and tier before generating, and tell the owner roughly how many characters a job will use.
 - **The voice must exist in the account** that generates it. Library voices can usually be used by id; if not, add them first.
-- **Generate with timestamps,** not plain TTS. Save the word timings next to each take.
+- **Current flagship only.** Before new ElevenLabs generation, check the [official model list](https://elevenlabs.io/docs/overview/models) and run `node scripts/models.mjs` with the configured API key (metadata only, no audio charge). Use the newest offline flagship returned by live `GET /v1/models`, not a remembered v2/v3 ID or Multilingual/Flash/Turbo fallback. The live account catalogue can be newer than the overview page; it returned `eleven_v4` when checked on 2026-10-24. A voice ID selects the speaker; the model ID selects the synthesis engine. Keep the chosen voice, update the engine.
+- **Never omit the API model ID or downgrade.** ElevenLabs' timestamp endpoint defaults to `eleven_multilingual_v2` when `model_id` is omitted. `vo.mjs` now resolves `latest` from live `GET /v1/models`, sends the concrete current ID and rejects stale top-level/per-line overrides before paid requests. If catalogue access, voice compatibility or timestamps fail, stop and report it; never retry v2 for convenience, speed, price or language.
+- **Generate with timestamps,** not plain TTS. Save word timings, resolved model ID, voice ID and generation date next to each take. A model preflight is not permission to spend credits.
 - **Never regenerate a shipped take** unless the owner asks. A new take changes the timings.
 - **Commit the timing JSON and the script; never commit audio takes.**
 
 ## 1. Script file
 
-Copy [templates/script.json](templates/script.json). Top level: `voiceId`, `modelId`, `settings`. Per line:
+Copy [templates/script.json](templates/script.json). Top level: `voiceId`, `modelId: "latest"`, `settings`. Copy `vo.mjs`, `models.mjs` and `key.mjs` together into the video project; the STT scripts also import `models.mjs`. Do not reuse old product-local copies without updating them. A pinned model is accepted only while it matches the live current flagship; old configs fail with an actionable error rather than silently changing a shipped take. Review any newer model's supported settings before generating. Per line:
 
 | Field | Meaning |
 |---|---|
 | `id` | Line id; also the take and timing file names (`V1.mp3`, `V1.json`) |
 | `text` | The spoken line; captions use the same text |
 | `direction` | An English style tag prepended to the text, for example `[calm, warm, conversational] ` |
-| `voiceId`, `modelId`, `settings`, `seed` | Per-line overrides; the default seed is 7 |
+| `voiceId`, `modelId`, `settings`, `seed` | Per-line overrides; `modelId` must be `latest` or the current flagship; the default seed is 7 |
 | `context` | `false` stops sending the neighbouring lines as prosody context |
 | `tempo` | A pitch-preserving speed change, applied only when shipping |
 
@@ -58,7 +62,9 @@ VO_SCRIPT=vo/<film>/script.json VO_AUDIO_DIR=vo/<film> VO_ALIGN_DIR=vo/<film> no
 VO_SCRIPT=vo/<film>/script.json VO_AUDIO_DIR=vo/<film> VO_ALIGN_DIR=vo/<film> node scripts/vo.mjs V2 V3    # just these
 ```
 
-`vo.mjs` sends neighbouring lines as context (consistent intonation), drops `[...]` tag characters from the word list, and prints each line's length and word onsets.
+`vo.mjs` preflights the live model catalogue once, validates every selected line before spending, sends neighbouring lines as context, drops `[...]` tag characters from the word list, and prints the concrete model, length and word onsets. Provider errors or invalid/missing alignment exit non-zero, without a model fallback or an untimed audio file. Existing audio is skipped unless its line is explicitly selected; missing alignment on existing audio requires restoration, not automatic regeneration.
+
+Speech-to-text is a separate model family: `stt.mjs` and the paid Scribe path in `transcribe.mjs` use current batch `scribe_v2`, not deprecated `scribe_v1`. Check the official model list before using paid STT; if a newer batch model is introduced, update `SCRIBE_MODEL` in `models.mjs` after validating its response contract. No downgrade on failure.
 
 ## 4. Check every line
 
@@ -100,7 +106,7 @@ Visual cues that should meet a word use the word's absolute time: line placement
 The owner records the script; the takes become timing data the same way as AI takes.
 
 1. **Record:** a quiet room, the mouth a hand's width from the microphone (a phone works), 48 kHz. One take per line (`V1.wav`, `V2.wav`), or one continuous take as a single line.
-2. **Trim** leading and trailing silence to about 0.2 s. Do not process further: the mixer high-passes, adds presence and compresses.
+2. **Prepare before timing:** probe the recording with upstream `probe.py`, trim leading/trailing silence to about 0.2 s, and use upstream voice cleanup only for measured noise problems. Keep the untreated source. The mixer already high-passes, adds presence and compresses; do not duplicate those treatments by default. Transcribe the exact prepared take.
 3. **Transcribe for timings:**
    ```sh
    node scripts/transcribe.mjs vo/<film>/V1.wav vo/<film>/V1.json --lang en          # local whisper.cpp, free

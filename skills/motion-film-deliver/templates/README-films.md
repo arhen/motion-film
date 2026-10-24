@@ -39,6 +39,14 @@ Masters: <resolution> at <fps> fps, h264 + AAC, <LUFS> LUFS, true peak ≤ <dBTP
 - **Sound in the browser:** autoplay starts muted; a user gesture can unmute.
 - **Sample data:** every person, business and number is fictional; product scenes carry "<tag>".
 
+## Processing and evidence
+
+- Required processor: ffmpeg-skill <version>; FFmpeg <build and effective paths>.
+- Source preparation: <source → prepared asset, operation, or unchanged with reason>.
+- Timing: clock.json; no independent edit timeline or post-approval retiming.
+- Evidence: <doctor/contract, per-file probes, clock checks, destination checks, inspected sheets and suite QA>.
+- Warnings or unavailable measurements: <each disposition, or none>.
+
 ## Deviations from the brief
 
 - <deviation>: <reason>

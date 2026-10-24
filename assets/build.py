@@ -139,16 +139,16 @@ def hero(P):
 
 def pipeline(P):
     H = 700
-    b = [card(H, P), heading(P, "Nine skills, eight gates", "Each phase has an output and a gate. Work moves on only when the gate passes.")]
+    b = [card(H, P), heading(P, "Nine skills + required FFmpeg", "FFmpeg prepares media. Remotion creates the picture. FFmpeg encodes and verifies. One clock throughout.")]
     phases = [
-        ("0", "Preflight", "motion-film", ["tools, keys, fonts,", "voices present"], ["every check passes"], []),
+        ("0", "Preflight", "motion-film + ffmpeg-skill", ["tools, keys, fonts,", "FFmpeg capabilities"], ["required tools usable"], []),
         ("1", "Brief", "motion-film-brief", ["kind, story, script,", "direction sheet, clock"], ["owner agrees on kind,", "story, length, voice"], []),
         ("2", "Design system", "motion-film-system", ["theme, components,", "catalogue board"], ["catalogue passes one", "critique round"], ["impeccable", "browser-use"]),
-        ("3", "Voice or footage", "motion-film-voice | footage", ["AI or own voice, or a", "cut of your footage"], ["speech-to-text matches,", "no cut inside a word"], []),
+        ("3", "Voice or footage", "motion-film-voice | footage", ["FFmpeg prep, then", "voice / footage timing"], ["speech-to-text matches,", "no cut inside a word"], []),
         ("4", "Music", "motion-film-score", ["synthesized score or", "a supplied track"], ["loudness met, voice", "clear of the bed"], []),
         ("5", "Picture", "motion-film-build", ["Remotion compositions,", "one per format"], ["key frames pass one", "critique round"], ["animate"]),
-        ("6", "Critique and QA", "motion-film-qa", ["evidence pack from", "the real file"], ["all checks pass,", "fixed in one batch"], ["impeccable", "review-animations"]),
-        ("7", "Deliver", "motion-film-deliver", ["renders, encodes,", "posters, README"], ["files probe right,", "no media in git"], []),
+        ("6", "Critique and QA", "motion-film-qa + ffmpeg-skill", ["clock + file checks,", "inspected frames"], ["all checks pass,", "fixed in one batch"], ["impeccable", "review-animations"]),
+        ("7", "Deliver", "motion-film-deliver + ffmpeg", ["verified encodes,", "posters, README"], ["clock preserved,", "no media in git"], []),
     ]
     cw, chh, gap = 262, 224, 20
     x0 = (W - (4 * cw + 3 * gap)) / 2

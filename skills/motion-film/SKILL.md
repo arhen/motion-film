@@ -7,6 +7,8 @@ description: Plan, build and ship consistent, high-craft motion videos in code f
 
 A motion video is frontend work with a clock. Every frame is a designed screen, so product-UI craft applies: the design system is the direction, critique is bounded and evidence-based, and nothing ships on "it rendered".
 
+**Fixed pipeline:** required `ffmpeg-skill` prepares media → Remotion builds the picture → FFmpeg encodes and verifies the real files. `clock.json` stays authoritative. Read [FFMPEG.md](FFMPEG.md) at preflight and follow it at ingest, QA and delivery; this is not an optional companion.
+
 ## The bar
 
 A video passes when all of these hold:
@@ -25,14 +27,14 @@ Run them in order. Load each phase skill when you reach it.
 
 | # | Phase | Skill | Output | Gate |
 |---|---|---|---|---|
-| 0 | Preflight | this file | tools, keys, voices, fonts present | every check passes |
+| 0 | Preflight | this file + `ffmpeg-skill` | tools, keys, voices, fonts, pinned FFmpeg skill and capability report | every required tool is usable |
 | 1 | Brief | `motion-film-brief` | the kind (menu when unclear), the voice source, `BRIEF.md` with a direction sheet, clock skeleton | owner agrees on kind, story, length, voice (taste calls only) |
 | 2 | Design system | `motion-film-system` | video theme, components, catalogue board, `VIDEO-SYSTEM.md` | catalogue board passes one critique round |
-| 3 | Voice or footage | `motion-film-voice` or `motion-film-footage` | AI takes, own recording or a footage edit, all as word-timing JSON | speech-to-text matches the script; lines fit their slots; no cut inside a word |
+| 3 | Voice or footage | `motion-film-voice` or `motion-film-footage` + `ffmpeg-skill` | probed/prepared media, takes or footage edit, all as word-timing JSON | prep precedes word timing; lines fit; no cut inside a word |
 | 4 | Score | `motion-film-score` | mixed WAV per video (synthesized score, or a licensed track with detected beats) | loudness target met; voice band well clear of the bed |
 | 5 | Build | `motion-film-build` | compositions | key-frame boards pass one critique round |
-| 6 | QA | `motion-film-qa` | evidence pack | all checks pass; findings fixed in one batch, confirmed once |
-| 7 | Deliver | `motion-film-deliver` | renders, web encodes, posters, README | files probe correctly; no generated media committed |
+| 6 | QA | `motion-film-qa` + `ffmpeg-skill` | clock checks, destination checks, inspected frames and evidence pack | all checks pass; findings fixed in one batch, confirmed once |
+| 7 | Deliver | `motion-film-deliver` + `ffmpeg-skill` | renders, verified encodes, posters, README | final encodes preserve the clock and pass QA; no generated media committed |
 
 Voice comes before the final clock: real line lengths set the slots. The build can start from the brief with placeholder slots and retime once takes exist. A silent or music-only video skips phase 3; a footage-based video takes its timing from the edit.
 
@@ -41,15 +43,16 @@ Voice comes before the final clock: real line lengths set the slots. The build c
 Check, do not assume. Report everything missing in one message.
 
 ```sh
-node --version          # 20+
+node --version          # 22.20+ (current skills installer)
 ffmpeg -hide_banner -encoders | grep -E "libx264|libvpx-vp9|libopus|aac"
 python3 -c "import numpy, scipy, PIL; print('python ok')"
 npx remotion --version  # inside the video project
 ```
 
+- **Required FFmpeg skill:** install the tested `ffmpeg-skill` v2.14.0 alongside this suite. Run the mandatory doctor/contract checks in [FFMPEG.md](FFMPEG.md), including per-tool capabilities; missing or incompatible installation blocks preflight. Record its version and effective FFmpeg paths in the evidence pack. Do not install or upgrade it silently mid-job.
 - **Remotion project:** the suite assumes one exists. If not, set it up with Remotion's own guide (https://www.remotion.dev/docs, `npx create-video@latest`), then come back. Remotion has its own licence (https://www.remotion.dev/license): free for individuals, non-profits and companies of up to 3 people; larger companies need a company licence. Tell the owner before building if that may apply.
 - **Fonts:** the brand's font files are copied into the video project's `public/fonts/` (keep them out of git if licences or size require).
-- **Voice-over:** a text-to-speech provider that returns word or character timestamps (ElevenLabs by default) and a speech-to-text endpoint for checking. The voices you plan to use must exist in that account. Check credits before generating: voice work costs money, so say so up front.
+- **Voice-over:** a text-to-speech provider that returns word or character timestamps (ElevenLabs by default) and a speech-to-text endpoint for checking. For ElevenLabs, run `models.mjs` and verify the current flagship against the official model list (`motion-film-voice`); use `modelId: "latest"`, never omitted/default API settings or a stale v2 override. The voices must exist in the account. Stop on unsupported voice/model/timestamps; never downgrade. Check credits and say the cost before generating.
 - **Browser:** Chrome plus the `browser-use` CLI, to capture the live product and to check the video in its real page.
 - If the project already has a media setup script, run it first, and never commit what it downloads.
 - **Copy the scripts and templates into the video project** (for example `video/scripts/`, `video/src/film/`) instead of running them from the skill folder. Node resolves `remotion` from the script's own location, and `synth.py` writes its cache next to itself.
@@ -66,7 +69,7 @@ npx remotion --version  # inside the video project
 
 ## Companion skills
 
-All optional. Each makes a phase better; none is required. Check which ones are installed and use them; without one, use the fallback.
+The skills below are optional; required `ffmpeg-skill` is already part of the fixed pipeline above. Check which companions are installed and use them; without one, use the fallback.
 
 | Need | Skill | Get it | Without it |
 |---|---|---|---|
